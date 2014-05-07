@@ -65,7 +65,7 @@ int main( int argc, char** argv ) {
         Mat green;
         greenFilter(frame,green);
         imshow("filter",green);
-        //featurevector.push_back(matToVal(green));
+        ///*featurevector.push_back(*/matToVal(green);//);
         
         //andere filters
         
@@ -98,13 +98,28 @@ int main( int argc, char** argv ) {
 
         framenr++;
         readVideo >> frame;
-        waitKey(2);
+        waitKey(1);
     }
 //    }
     waitKey(0);
     return 0;
 }
-
+/*
 float matToVal(const Mat &img){
     //matrix omzetten naar getal
-}
+    Size s = img.size();
+    int cols = s.width;
+    int rows = s.height;
+    cout << cols << endl << rows << endl;
+
+    double totaal = 0;
+    for (int y  = 0 ; y < rows ; y++){
+        for (int x =0 ; x < cols ; x++){
+            totaal += img.at<double>(x,y);
+            cout << totaal << endl;
+        }
+    }
+    return totaal/(cols*rows);
+
+
+}*/

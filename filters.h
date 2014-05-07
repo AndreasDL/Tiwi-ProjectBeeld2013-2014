@@ -15,9 +15,6 @@ int iLowH = 19;
 
 void greenFilter(const Mat &imgOriginal, Mat &output){
 
-
-    
-
     namedWindow("Control",CV_WINDOW_AUTOSIZE); //create a window called "Control"
     //Create trackbars in "Control" window
     cvCreateTrackbar("LowH", "Control", &iLowH, 255);
@@ -35,4 +32,5 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
 
     inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), output); //Threshold the image => enkel groen over houden
     dilate( output, output, getStructuringElement(MORPH_RECT, Size(3, 3)) ); //dilate the image to get rid of holes
+    //cvtColor(output,output,CV_RGB2GRAY);
 }
