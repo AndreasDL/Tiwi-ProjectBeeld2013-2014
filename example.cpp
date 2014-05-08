@@ -65,6 +65,8 @@ int main( int argc, char** argv ) {
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
         split(frame,blokjes);//default 3x3, opgeven van dimensies ook mogelijk!
 
+        crossDetect(frame);
+
         Mat green;
         greenFilter(frame,green);        
         imshow("filter",green);

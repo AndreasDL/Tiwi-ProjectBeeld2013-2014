@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <opencv2/core/core.hpp>
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 
@@ -45,11 +46,29 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
     Mat imgHSV;
     cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from ?? to HSV
     //Mat imgThresholded;
-	printf("%f\n", getMean(imgHSV));
+	//printf("%f\n", getMean(imgHSV));
 	
 	
     inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), output); //Threshold the image => enkel groen over houden
 	
     dilate( output, output, getStructuringElement(MORPH_RECT, Size(3, 3)) ); //dilate the image to get rid of holes
     //cvtColor(output,output,CV_RGB2GRAY);
+}
+
+void crossDetect(Mat input){//copy input to show crosses
+    //vector<Mat> laserChannels;
+    //split(input, laserChannels);
+    Mat grey;
+    cvtColor(input,grey,CV_RGB2GRAY);
+
+    vector<Point2f> corners;
+    // only using the red channel since it contains the interesting bits...
+    goodFeaturesToTrack(grey, corners, 50, 0.1, 10, Mat());//, 3, false, 0.04);
+
+    for (int i = 0 ; i < corners.size() ; i++){
+        circle(input, corners[i], 3, Scalar(0, 255, 0), -1, 8, 0);
+    }
+
+    //imshow("laser red", laserChannels[2]);
+    imshow("corner", input);
 }
