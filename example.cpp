@@ -9,7 +9,7 @@
 #include <iostream>
 #include <fstream>
 #include <opencv2/core/core.hpp>
-//#include "fileWriter.h" //dees gaan we der echt wel uithalen
+#include "splitter.h"
 #include "filters.h"
 
 using namespace std;
@@ -62,11 +62,16 @@ int main( int argc, char** argv ) {
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
         
         //groen herkennen
+        vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
+        split(frame,blokjes);//default 3x3, opgeven van dimensies ook mogelijk!
+
         Mat green;
-        greenFilter(frame,green);
+        greenFilter(frame,green);        
         imshow("filter",green);
         ///*featurevector.push_back(*/matToVal(green);//);
         
+
+
         //andere filters
         
         
