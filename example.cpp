@@ -15,18 +15,25 @@
 using namespace std;
 using namespace cv;
 
-float matToVal(const Mat &img);
+//config values
+//split image in 3x3 blocks & set descriptions for windows (debug)
+const int dimX = 3;const string descX[] = {"links", "midden", "rechts"};
+const int dimY = 3;const string descY[] = {"boven", "midden", "onder"};
 
 int main( int argc, char** argv ) {
 
     VideoCapture readVideo;
+    if (argc < 1){
+        cout << "Derp! You need to specify a video and/or image" << endl;
+        return 1;
+    }
     readVideo.open(argv[1]);
     Mat frame;
 
     readVideo >> frame;
     if(frame.empty()){
         fprintf(stderr,"Something went wrong with the video capture.\n");
-        return 1;
+        return 2;
     }
 
 //  ###################################################
@@ -46,14 +53,17 @@ int main( int argc, char** argv ) {
 //  #################################
 
     int framenr = 0;
-    //string filename = argv[2];
-    //remove(filename.c_str());
-    namedWindow("orig");
-    namedWindow("filter");
+    namedWindow("orig"); //display the original video
+    namedWindow(descX[0]+descY[2]);
+	/*for (int y = 0 ; y < dimY ; y++){
+		for (int x = 0 ; x < dimX ; x++){
+		  namedWindow(descX[x]+descY[y]);
+          cout << descX[x]+descY[y] << endl;
+		}
+	}*/
 
-    while(!frame.empty()){
-        // cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
-        imshow("orig",frame);
+    int key = -1;
+    while(!frame.empty() && key == -1){
 
         //  ################################################
         //  ######### DOE ZOTTE SHIT MET UW FRAMES #########
@@ -61,25 +71,30 @@ int main( int argc, char** argv ) {
         
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
         
-        //groen herkennen
+        //orig weergeven
+        //imshow("orig",frame);
+
+        //Afbeelding splitsen in 3x3
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
-        split(frame,blokjes);//default 3x3, opgeven van dimensies ook mogelijk!
-
-        crossDetect(frame);
-
-        Mat green;
-        greenFilter(frame,green);        
-        imshow("filter",green);
-        ///*featurevector.push_back(*/matToVal(green);//);
+        split(frame,blokjes,dimX,dimY);//default 3x3, opgeven van dimensies ook mogelijk!
+		
+		
+		Mat green;
+		//enkel blok 0, 2 => links onder
+        featurevector.push_back(greenFilter(blokjes[0][2],green));
+		imshow(descX[0]+descY[2],green);
+		imshow("orig",blokjes[0][2]);
+		/*/
+        //alle blokjes
+		for (int y = 0; y< dimY; y++){
+			for (int x = 0; x< dimX; x++){
+				featurevector.push_back(greenFilter(blokjes[x][y],green)); //opslaan in feature vector
+				imshow(descX[x]+descY[y],green); //weergeven
+			}
+		}*/
         
-
-
         //andere filters
         
-        
-        
-
-
         //  ######################################################
         //  ######### SCHRIJF UW FEATURES NAAR TEXTFILES #########
         //  ######################################################
@@ -87,46 +102,30 @@ int main( int argc, char** argv ) {
 //                writeToFile(filename,0);
 //                writeSpace(filename);
 
-            for(int i=0; i<featurevector.size(); i++){
-                cout << featurevector.at(i) << " ";
+        cout << "Frame: " << framenr << " ft.: ";
+        for(int i=0; i<featurevector.size(); i++){
+
+            cout << featurevector.at(i) << " ";
 //                    writeToFile(filename,i+1);
 //                    writeDoublePoint(filename);
 //                writeToFile(filename,featurevector.at(i));
 //                writeSpace(filename);
 
 //                if(i!=featurevector.size()-1) writeDoublePoint(filename);
-            }
+        }
+        cout << endl;
 //            writeEndl(filename);
 //            cout << endl;
 
         //  ###########################
-        //  ######### Restart #########
+        //  #########  next  ##########
         //  ###########################
 
         framenr++;
         readVideo >> frame;
-        waitKey(1);
+        key = waitKey(1);
     }
-//    }
+    cout << "press any key to exit" << endl;
     waitKey(0);
     return 0;
 }
-/*
-float matToVal(const Mat &img){
-    //matrix omzetten naar getal
-    Size s = img.size();
-    int cols = s.width;
-    int rows = s.height;
-    cout << cols << endl << rows << endl;
-
-    double totaal = 0;
-    for (int y  = 0 ; y < rows ; y++){
-        for (int x =0 ; x < cols ; x++){
-            totaal += img.at<double>(x,y);
-            cout << totaal << endl;
-        }
-    }
-    return totaal/(cols*rows);
-
-
-}*/

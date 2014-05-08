@@ -11,18 +11,11 @@ void split(const Mat &input,vector<vector<Mat> > &output,const int dimX = 3, con
 	int width  = input.cols / dimX;
 	int height = input.rows / dimY;
 
-	/*for (int y = 0 ; y < dimY ; y++){
-		for (int x = 0 ; x < dimX ; x++){
-			namedWindow(""+x+y);
-		}
-	}*/
-
 	for (int x = 0 ; x < dimX; x++){
 		//create new vector & init size
 		output[x] = vector<Mat>(dimY);
 		for (int y = 0; y < dimY; y++){
 			output[x][y] = input( Rect(x*width, y*height, width, height) );
-			//imshow(""+x+y,output[x][y]);
 		}
 	}
 
