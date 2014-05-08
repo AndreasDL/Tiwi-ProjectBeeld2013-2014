@@ -49,11 +49,18 @@ int main( int argc, char** argv ) {
     //string filename = argv[2];
     //remove(filename.c_str());
     namedWindow("orig");
-    namedWindow("filter");
-
+	namedWindow("00");
+	namedWindow("00orig");
+	
+	// for (int y = 0 ; y < 3 ; y++){
+		// for (int x = 0 ; x < 3 ; x++){
+			// namedWindow(""+x+y);
+		// }
+	// }
+		
     while(!frame.empty()){
         // cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
-        imshow("orig",frame);
+        // imshow("orig",frame);
 
         //  ################################################
         //  ######### DOE ZOTTE SHIT MET UW FRAMES #########
@@ -65,9 +72,22 @@ int main( int argc, char** argv ) {
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
         split(frame,blokjes);//default 3x3, opgeven van dimensies ook mogelijk!
 
-        Mat green;
-        greenFilter(frame,green);        
-        imshow("filter",green);
+		
+		
+		Mat green;
+		greenFilter(blokjes[0][2],green);
+		imshow("00",green);
+		imshow("00orig",blokjes[0][2]);
+		/*
+        
+		for (int i = 0; i<blokjes.size(); i++){
+			for (int j = 0; j<blokjes[i].size(); j++){
+				greenFilter(blokjes[i][j],green);
+				imshow(""+i+j,green);
+				//imshow("filter",green);
+			}
+		}*/
+        
         ///*featurevector.push_back(*/matToVal(green);//);
         
 

@@ -6,13 +6,13 @@
 using namespace cv;
 using namespace std;
 	int iLowH = 19;
-    int iHighH = 124;
+    int iHighH = 43;
 
     int iLowS = 87; 
-    int iHighS = 50;
+    int iHighS = 87;
 
     int iLowV = 124;
-    int iHighV = 89;
+    int iHighV = 102;
 	
 	double iHighGreen = sqrt(iHighH*iHighH + iHighS*iHighS + iHighV*iHighV);
 	double iLowGreen = sqrt(iLowH*iLowH + iLowS*iLowS + iLowV*iLowV);
@@ -33,13 +33,8 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
 	
     namedWindow("Control",CV_WINDOW_AUTOSIZE); //create a window called "Control"
     //Create trackbars in "Control" window
-    cvCreateTrackbar("LowH", "Control", &iLowH, 255);
     cvCreateTrackbar("HighH", "Control", &iHighH, 255);
-
-    cvCreateTrackbar("LowS", "Control", &iLowS, 255);
     cvCreateTrackbar("HighS", "Control", &iHighS, 255);
-
-    cvCreateTrackbar("LowV", "Control", &iLowV, 255);
     cvCreateTrackbar("HighV", "Control", &iHighV, 255);
 
     Mat imgHSV;
@@ -55,6 +50,7 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
 		double h = (mean(channels[0])[0]);
 		double s = (mean(channels[1])[0]);
 		double v = (mean(channels[2])[0]);
+		cout << "h: " << h << " - " << s << " - " << v << endl <<endl;
 		output.setTo(cv::Scalar(h,s,v));
 		cvtColor(output, output, COLOR_HSV2BGR);
 	}
@@ -62,5 +58,5 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
     // inRange(imgHSV, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), output); //Threshold the image => enkel groen over houden
 	
     dilate( output, output, getStructuringElement(MORPH_RECT, Size(3, 3)) ); //dilate the image to get rid of holes
-    //cvtColor(output,output,CV_RGB2GRAY);
+    // cvtColor(output,output,CV_RGB2GRAY);
 }
