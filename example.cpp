@@ -52,7 +52,7 @@ int main( int argc, char** argv ) {
     namedWindow("filter");
 
     while(!frame.empty()){
-        //cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
+        // cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
         imshow("orig",frame);
 
         //  ################################################
