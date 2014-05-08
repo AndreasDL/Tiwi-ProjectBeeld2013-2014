@@ -44,7 +44,7 @@ void greenFilter(const Mat &imgOriginal, Mat &output){
 	
 	
 	printf("%f\n", getDistance(imgHSV, iHighH,iHighS,iHighV));
-	if (getDistance(imgHSV, iHighH,iHighS,iHighV)>50){
+	if (getDistance(imgHSV, iHighH,iHighS,iHighV)>60){
 		vector<Mat> channels;
 		split(imgHSV, channels);
 		double h = (mean(channels[0])[0]);
