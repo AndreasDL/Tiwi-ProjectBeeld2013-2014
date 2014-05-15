@@ -18,6 +18,4 @@ void split(const Mat &input,vector<vector<Mat> > &output,const int dimX = 3, con
 			output[x][y] = input( Rect(x*width, y*height, width, height) );
 		}
 	}
-
-
 }
