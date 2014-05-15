@@ -55,15 +55,15 @@ int main( int argc, char** argv ) {
     int framenr = 0;
     namedWindow("orig"); //display the original video
     namedWindow(descX[0]+descY[2]);
-	/*for (int y = 0 ; y < dimY ; y++){
+	for (int y = 0 ; y < dimY ; y++){
 		for (int x = 0 ; x < dimX ; x++){
 		  namedWindow(descX[x]+descY[y]);
           cout << descX[x]+descY[y] << endl;
 		}
-	}*/
+	}
 
     int key = -1;
-    while(!frame.empty() && key == -1){
+    while(!frame.empty() ){ //&& key == -1){
 
         //  ################################################
         //  ######### DOE ZOTTE SHIT MET UW FRAMES #########
@@ -72,7 +72,7 @@ int main( int argc, char** argv ) {
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
         
         //orig weergeven
-        //imshow("orig",frame);
+        imshow("orig",frame);
 
         //Afbeelding splitsen in 3x3
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
@@ -81,17 +81,18 @@ int main( int argc, char** argv ) {
 		
 		Mat green;
 		//enkel blok 0, 2 => links onder
+        /*
         featurevector.push_back(greenFilter(blokjes[0][2],green));
 		imshow(descX[0]+descY[2],green);
 		imshow("orig",blokjes[0][2]);
-		/*/
+		*/
         //alle blokjes
 		for (int y = 0; y< dimY; y++){
 			for (int x = 0; x< dimX; x++){
 				featurevector.push_back(greenFilter(blokjes[x][y],green)); //opslaan in feature vector
 				imshow(descX[x]+descY[y],green); //weergeven
 			}
-		}*/
+		}
         
         //andere filters
         
