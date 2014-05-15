@@ -99,10 +99,11 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // Note: absolute value of an area is used because
                 // area may be positive or negative - in accordance with the
                 // contour orientation
+                int calculatedArea = fabs(contourArea(Mat(approx)));
                 if( approx.size() == 4 &&
-                    fabs(contourArea(Mat(approx))) > threshOppMin &&
+                    calculatedArea > threshOppMin &&
                     isContourConvex(Mat(approx)) &&
-                    fabs(contourArea(Mat(approx))) < threshOppMax)
+                    calculatedArea < threshOppMax)
                 {
                     double maxCosine = 0;
 
@@ -165,7 +166,7 @@ int nextSquares(Mat src, int minSize, int maxSize){
 void update(int, void*){
     squares.clear();
     findSquares(image, squares);
-    drawSquares(image, squares);
+    //drawSquares(image, squares);
 }
 
 

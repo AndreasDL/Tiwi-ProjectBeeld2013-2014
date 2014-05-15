@@ -63,7 +63,7 @@ int main( int argc, char** argv ) {
 //    createFASTWindow();
     createSquaresWindow();
 
-    cout<<"Frame;100-2000;2000-5000;5000-10000;10000-100000"<<endl;
+//    cout<<"Frame;100-2000;2000-5000;5000-10000;10000-100000"<<endl;
 
     while(!frame.empty()){
         //cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
@@ -86,11 +86,16 @@ int main( int argc, char** argv ) {
 //        showNextCorners(frame);
 //        showNext(frame);
 //        nextCanny(frame);
-        cout<<framenr<<";"<<nextSquares(frame, 100, 2000)
-                     <<";"<<nextSquares(frame, 2000, 5000)
-                     <<";"<<nextSquares(frame, 5000, 10000)
-                     <<";"<<nextSquares(frame, 10000, 100000)<<endl;
+//        cout<<framenr<<";"<<nextSquares(frame, 100, 2000)
+//                     <<";"<<nextSquares(frame, 2000, 5000)
+//                     <<";"<<nextSquares(frame, 5000, 10000)
+//                     <<";"<<nextSquares(frame, 10000, 100000)<<endl;
         
+        cout<<" 1:"<<nextSquares(frame, 100, 2000)
+                     <<" 2:"<<nextSquares(frame, 2000, 5000)
+                     <<" 3:"<<nextSquares(frame, 5000, 10000)
+                     <<" 4:"<<nextSquares(frame, 10000, 100000)
+                     <<" #"<<framenr<<endl;
 
 
         //  ######################################################
@@ -115,14 +120,16 @@ int main( int argc, char** argv ) {
         //  ###########################
         //  ######### Restart #########
         //  ###########################
-        for(int it = 0; it < 10; it++){
+        for(int it = 0; it < 9; it++){
             framenr++;
-            readVideo >> frame;
+            readVideo.grab();
         }
+        framenr++;
+        readVideo >> frame;
         waitKey(1);
     }
 //    }
-    waitKey(0);
+//    waitKey(0);
     return 0;
 }
 
