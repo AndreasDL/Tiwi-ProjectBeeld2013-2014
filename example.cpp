@@ -23,7 +23,7 @@ const int dimY = 3;const string descY[] = {"boven", "midden", "onder"};
 int main( int argc, char** argv ) {
 
     VideoCapture readVideo;
-    if (argc < 1){
+    if (argc < 2){
         cout << "Derp! You need to specify a video and/or image" << endl;
         return 1;
     }
