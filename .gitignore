@@ -6,3 +6,4 @@ install_manifest.txt
 gmon.out
 bin/
 data/
+*.avi
