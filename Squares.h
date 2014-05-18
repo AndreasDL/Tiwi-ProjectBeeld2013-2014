@@ -20,13 +20,33 @@ int thresh = 50, maxThresh = 300, N = 11;
 int threshOppMin = 100, maxThreshOppMin = 100000;
 int threshOppMax = 2000, maxThreshOppMax = 100000;
 
-vector<vector<Point> > squares;
+int sqRed = 0, sqGreen = 255, sqBlue = 0;
+
+vector<vector<vector<Point> > >squares;
+
+vector<int> minSizes, maxSizes;
 
 const char* wndname = "Square Detection Demo";
 Mat image;
 
 
 void update(int, void*);
+
+void split(const Mat &input,vector<vector<Mat> > &output,const int dimX = 3, const int dimY = 3){
+    output.clear();
+    output.resize(dimX);
+
+    int width  = input.cols / dimX;
+    int height = input.rows / dimY;
+
+    for (int x = 0 ; x < dimX; x++){
+        //create new vector & init size
+        output[x] = vector<Mat>(dimY);
+        for (int y = 0; y < dimY; y++){
+            output[x][y] = input( Rect(x*width, y*height, width, height) );
+        }
+    }
+}
 
 
 // helper function:
@@ -43,10 +63,8 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 
 // returns sequence of squares detected on the image.
 // the sequence is stored in the specified memory storage
-static void findSquares( const Mat& image, vector<vector<Point> >& squares )
+static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squares )
 {
-    squares.clear();
-
     Mat pyr, timg, gray0(image.size(), CV_8U), gray;
 
     // down-scale and upscale the image to filter out the noise
@@ -69,10 +87,11 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
             {
                 // apply Canny. Take the upper threshold from slider
                 // and set the lower to 0 (which forces edges merging)
-                Canny(gray0, gray, 0, thresh, 5);
+                Canny(gray0, gray, 80, 200, 5);
                 // dilate canny output to remove potential
                 // holes between edge segments
-                dilate(gray0, gray, Mat(), Point(-1,-1));
+                dilate(gray, gray, Mat(), Point(-1,-1));
+                erode(gray, gray, Mat(), Point(-1,-1));
             }
             else
             {
@@ -100,25 +119,28 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
                 // area may be positive or negative - in accordance with the
                 // contour orientation
                 int calculatedArea = fabs(contourArea(Mat(approx)));
-                if( approx.size() == 4 &&
-                    calculatedArea > threshOppMin &&
-                    isContourConvex(Mat(approx)) &&
-                    calculatedArea < threshOppMax)
+                if( approx.size() == 4 &&                    
+                    isContourConvex(Mat(approx)))
                 {
-                    double maxCosine = 0;
+                    for(int sizes = 0; sizes < minSizes.size();sizes++){
+                        if(calculatedArea > minSizes[sizes] &&
+                                calculatedArea < maxSizes[sizes]){
+                            double maxCosine = 0;
 
-                    for( int j = 2; j < 5; j++ )
-                    {
-                        // find the maximum cosine of the angle between joint edges
-                        double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
-                        maxCosine = MAX(maxCosine, cosine);
+                            for( int j = 2; j < 5; j++ )
+                            {
+                                // find the maximum cosine of the angle between joint edges
+                                double cosine = fabs(angle(approx[j%4], approx[j-2], approx[j-1]));
+                                maxCosine = MAX(maxCosine, cosine);
+                            }
+
+                            // if cosines of all angles are small
+                            // (all angles are ~90 degree) then write quandrange
+                            // vertices to resultant sequence
+                            if( maxCosine < 0.2 )
+                                squares[sizes].push_back(approx);
+                        }
                     }
-
-                    // if cosines of all angles are small
-                    // (all angles are ~90 degree) then write quandrange
-                    // vertices to resultant sequence
-                    if( maxCosine < 0.3 )
-                        squares.push_back(approx);
                 }
             }
         }
@@ -127,13 +149,22 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares )
 
 
 // the function draws all the squares in the image
-static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
+static void drawSquares( Mat& image, const vector<vector<vector<Point> > >& squares )
 {
-    for( size_t i = 0; i < squares.size(); i++ )
-    {
-        const Point* p = &squares[i][0];
-        int n = (int)squares[i].size();
-        polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
+    vector<Scalar> colours;
+    colours.push_back(Scalar(255,0,0));     //Blue
+    colours.push_back(Scalar(255,255,0));   //Cyan
+    colours.push_back(Scalar(0,255,0));     //Green
+    colours.push_back(Scalar(0,0,255));     //Red
+    colours.push_back(Scalar(255,0,255));   //Purple
+    colours.push_back(Scalar(0,255,255));   //Yellow
+    for(int j = 0; j < squares.size(); j++){
+        for( size_t i = 0; i < squares[j].size(); i++ )
+        {
+            const Point* p = &squares[j][i][0];
+            int n = (int)squares[j][i].size();
+            polylines(image, &p, &n, 1, true, colours[j], 3, CV_AA);
+        }
     }
 
     imshow(wndname, image);
@@ -144,30 +175,44 @@ void createSquaresWindow(){
 
     namedWindow( wndname, CV_WINDOW_NORMAL );
     createTrackbar( "Threshold: ", wndname, &thresh, maxThresh, update );
-    createTrackbar( "Min opp: ", wndname, &threshOppMin, maxThreshOppMin, update );
-    createTrackbar( "Max opp: ", wndname, &threshOppMax, maxThreshOppMax, update );
+//    createTrackbar( "Min opp: ", wndname, &threshOppMin, maxThreshOppMin, update );
+//    createTrackbar( "Max opp: ", wndname, &threshOppMax, maxThreshOppMax, update );
 }
 
-int nextSquares(Mat src)
-{
-    image = src;
-    update(0,0);
-    return squares.size();
-}
+//vector<int> nextSquares(Mat src)
+//{
+//    image = src;
+//    update(0,0);
+//    return squares.size();
+//}
 
-int nextSquares(Mat src, int minSize, int maxSize){
+vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
     image = src;
-    threshOppMin = minSize;
-    threshOppMax = maxSize;
+    minSizes = minSize;
+    maxSizes = maxSize;
+
+    squares.clear();
+    for(int i = 0; i < minSizes.size(); i++){
+        vector<vector<Point> > newVector;
+        squares.push_back(newVector);
+    }
+
     update(0,0);
-    return squares.size();
+
+    vector<int> counts;
+    for(int i = 0; i < squares.size(); i++)
+        counts.push_back(squares[i].size());
+
+    return counts;
 }
 
 void update(int, void*){
-    squares.clear();
-    findSquares(image, squares);
-    //drawSquares(image, squares);
+    vector<vector<Mat> > splitImages;
+    split(image, splitImages, 1, 2);
+    findSquares(splitImages[0][1], squares);
+    drawSquares(image, squares);
 }
+
 
 
 #endif // SQUARES_H
