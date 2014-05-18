@@ -67,25 +67,25 @@ int main( int argc, char** argv ) {
 //    cout<<"Frame;100-2000;2000-5000;5000-10000;10000-100000"<<endl;
 
     vector<int> minSizes;
-    minSizes.push_back(400);
+//    minSizes.push_back(400);
+//    minSizes.push_back(801);
     minSizes.push_back(801);
-    minSizes.push_back(2001);
-    minSizes.push_back(5001);
-    minSizes.push_back(9001);
+    minSizes.push_back(4501);
+    minSizes.push_back(19001);
     vector<int> maxSizes;
-    maxSizes.push_back(800);
-    maxSizes.push_back(2000);
-    maxSizes.push_back(5000);
-    maxSizes.push_back(9000);
+//    maxSizes.push_back(800);
+//    maxSizes.push_back(2000);
+    maxSizes.push_back(4500);
+    maxSizes.push_back(19000);
     maxSizes.push_back(100000);
 
 
-    vector<vector<int > > countHistory;
-    countHistory.push_back(*(new vector<int>));
-    countHistory.push_back(*(new vector<int>));
-    countHistory.push_back(*(new vector<int>));
-    countHistory.push_back(*(new vector<int>));
-    countHistory.push_back(*(new vector<int>));
+//    vector<vector<int > > countHistory;
+//    countHistory.push_back(*(new vector<int>));
+//    countHistory.push_back(*(new vector<int>));
+//    countHistory.push_back(*(new vector<int>));
+//    countHistory.push_back(*(new vector<int>));
+//    countHistory.push_back(*(new vector<int>));
 
     ofstream outDat;
     outDat.open("halfFrame.dat", ios_base::app);
@@ -126,7 +126,7 @@ int main( int argc, char** argv ) {
 //                     <<";"<<nextSquares(frame, 10000, 100000)<<endl;
 
         vector<int> counts = nextSquares(frame, minSizes, maxSizes);
-        countHistory[(framenr / 10) % 5] = counts;
+//        countHistory[(framenr / 10) % 3] = counts;
 
         for(int countIt = 0; countIt < counts.size(); countIt++){
 //            if(framenr > 30){

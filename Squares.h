@@ -209,6 +209,7 @@ vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
 void update(int, void*){
     vector<vector<Mat> > splitImages;
     split(image, splitImages, 1, 2);
+    image = splitImages[0][1];
     findSquares(splitImages[0][1], squares);
     drawSquares(image, squares);
 }
