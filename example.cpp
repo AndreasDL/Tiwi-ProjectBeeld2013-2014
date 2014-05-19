@@ -54,13 +54,13 @@ int main( int argc, char** argv ) {
 
     int framenr = 0;
     namedWindow("orig"); //display the original video
-    namedWindow(descX[0]+descY[2]);
-	for (int y = 0 ; y < dimY ; y++){
+	/*for (int y = 0 ; y < dimY ; y++){
 		for (int x = 0 ; x < dimX ; x++){
 		  namedWindow(descX[x]+descY[y]);
           cout << descX[x]+descY[y] << endl;
 		}
-	}
+	}*/
+    //namedWindow("white");
 
     int key = -1;
     while(!frame.empty() ){ //&& key == -1){
@@ -78,7 +78,7 @@ int main( int argc, char** argv ) {
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
         split(frame,blokjes,dimX,dimY);//default 3x3, opgeven van dimensies ook mogelijk!
 		
-		
+		//groen => gras
 		Mat green;
 		//enkel blok 0, 2 => links onder
         /*
@@ -87,12 +87,19 @@ int main( int argc, char** argv ) {
 		imshow("orig",blokjes[0][2]);
 		*/
         //alle blokjes
-		for (int y = 0; y< dimY; y++){
-			for (int x = 0; x< dimX; x++){
+		for (int y = 0; y< blokjes.size(); y++){
+			for (int x = 0; x< blokjes[y].size(); x++){
 				featurevector.push_back(greenFilter(blokjes[x][y],green)); //opslaan in feature vector
-				imshow(descX[x]+descY[y],green); //weergeven
+				//imshow(descX[x]+descY[y],green); //weergeven
 			}
 		}
+
+        //wit => zebrapad
+        Mat white;
+        featurevector.push_back(zebraFilter(frame));
+        //imshow("white",white);
+
+
         
         //andere filters
         
@@ -100,30 +107,24 @@ int main( int argc, char** argv ) {
         //  ######### SCHRIJF UW FEATURES NAAR TEXTFILES #########
         //  ######################################################
 
-//                writeToFile(filename,0);
-//                writeSpace(filename);
 
         cout << "Frame: " << framenr << " ft.: ";
         for(int i=0; i<featurevector.size(); i++){
 
             cout << featurevector.at(i) << " ";
-//                    writeToFile(filename,i+1);
-//                    writeDoublePoint(filename);
-//                writeToFile(filename,featurevector.at(i));
-//                writeSpace(filename);
-
-//                if(i!=featurevector.size()-1) writeDoublePoint(filename);
         }
         cout << endl;
-//            writeEndl(filename);
-//            cout << endl;
-
+        
         //  ###########################
         //  #########  next  ##########
         //  ###########################
 
-        framenr++;
+        framenr++;/*
+        for (int i = 0 ; i < 10; i++){
+            readVideo.grab();
+        }*/
         readVideo >> frame;
+
         key = waitKey(1);
     }
     cout << "press any key to exit" << endl;
