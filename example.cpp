@@ -13,6 +13,7 @@
 #include "filters.h"
 //#include "Canny.h"
 #include "Squares.h"
+#include "Grass.h"
 
 using namespace std;
 using namespace cv;
@@ -56,7 +57,7 @@ int main( int argc, char** argv ) {
     int framenr = 0;
     //string filename = argv[2];
     //remove(filename.c_str());
-//    namedWindow("orig");
+    namedWindow("orig",CV_WINDOW_NORMAL);
 //    namedWindow("filter");
 
 //    createHarrisWindow();
@@ -92,7 +93,14 @@ int main( int argc, char** argv ) {
     ofstream outCsv;
     outCsv.open("halfFrame.csv", ios_base::app);
 
+    ofstream outColorCsv;
+    outColorCsv.open("color.csv", ios_base::app);
+    ofstream outColorDat;
+    outColorDat.open("color.dat", ios_base::app);
+
     while(!frame.empty()){
+
+        imshow("orig", frame);
         //cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
 //        imshow("orig",frame);
 
@@ -125,20 +133,29 @@ int main( int argc, char** argv ) {
 //                     <<";"<<nextSquares(frame, 5000, 10000)
 //                     <<";"<<nextSquares(frame, 10000, 100000)<<endl;
 
-        vector<int> counts = nextSquares(frame, minSizes, maxSizes);
-//        countHistory[(framenr / 10) % 3] = counts;
+//        vector<int> counts = nextSquares(frame, minSizes, maxSizes);
+////        countHistory[(framenr / 10) % 3] = counts;
 
-        for(int countIt = 0; countIt < counts.size(); countIt++){
-//            if(framenr > 30){
-//                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
-//            }
-//            else
-                outDat<<" "<<countIt +1<<":"<<counts[countIt];
-                outCsv<<";"<<counts[countIt];
-//            cout<<counts[countIt]<<";";
+//        for(int countIt = 0; countIt < counts.size(); countIt++){
+////            if(framenr > 30){
+////                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
+////            }
+////            else
+//                outDat<<" "<<countIt +1<<":"<<counts[countIt];
+//                outCsv<<";"<<counts[countIt];
+////            cout<<counts[countIt]<<";";
+//        }
+//        outDat<<" #"<<framenr<<endl;
+//        outCsv<<";"<<framenr<<endl;
+
+        vector<Scalar> colorOutput = nextGrass(frame);
+        for(int ci = 0; ci < 6;  ci++){
+//            outColorDat<<" "<<ci +1<<":"<<colorOutput[(int) ci * 0.3][ci % 3];
+//            outColorCsv<<";"<<colorOutput[(int) ci * 0.3][ci % 3];
+            cout<<" "<<ci +1<<":"<<colorOutput[(int) ci * 0.3][ci % 3];
         }
-        outDat<<" #"<<framenr<<endl;
-        outCsv<<";"<<framenr<<endl;
+//        outColorDat<<" #"<<framenr<<endl;
+//        outColorCsv<<";"<<framenr<<endl;
 
         //  ######################################################
         //  ######### SCHRIJF UW FEATURES NAAR TEXTFILES #########
@@ -168,6 +185,7 @@ int main( int argc, char** argv ) {
         }
         framenr++;
         readVideo >> frame;
+        cout<<framenr<<endl;
 
         if(waitKey(1) != -1)
             waitKey(-1);

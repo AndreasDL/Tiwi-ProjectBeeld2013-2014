@@ -25,4 +25,6 @@ HEADERS += \
     ../Harris.h \
     ../LineDetection.h \
     ../Canny.h \
-    ../Squares.h
+    ../Squares.h \
+    ../Grass.h \
+    ../SplitImage.h
