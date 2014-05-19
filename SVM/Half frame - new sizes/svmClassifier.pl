@@ -15,7 +15,7 @@ my $modelKlein = "modelKlein.dat";
 
 # SVM stuff
 open (INFILE , $inputFile)  or die "Can't open $inputFile: $!";
-print "File opened succesfully!\n";
+my $count = 0;
 while (<INFILE>) {
 	open(DATWR, ">tmp_dat.dat");
 	print DATWR $_;
@@ -24,38 +24,40 @@ while (<INFILE>) {
 	open(DAT, "tmp_predictions");
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
-	print "svmGroot: $svmValue\n";
+	#print "svmGroot: $svmValue\n";
 	
 	if($svmValue < 0) {
 		`$svmClassify tmp_dat.dat $modelMiddel tmp_predictions`;
 		open(DAT, "tmp_predictions");
 		my @lines = <DAT>;
 		my $svmValue = $lines[0];
-		print "svmMiddel: $svmValue\n";	
+		#print "svmMiddel: $svmValue\n";	
 		
 		if($svmValue < 0) {
 			`$svmClassify tmp_dat.dat $modelKlein tmp_predictions`;
 			open(DAT, "tmp_predictions");
 			my @lines = <DAT>;
 			my $svmValue = $lines[0];
-			print "svmKlein: $svmValue\n";
+			#print "svmKlein: $svmValue\n";
 			
 			if($svmValue < 0) {
-				print "The SVM has no clue..\n";
+				print "$count -> The SVM has no clue..\n";
 			} elsif($svmValue == 0) {
-				print "The SVM thinks there's no tiles here.\n";
+				print "$count -> The SVM thinks there's no tiles here. Value: $svmValue";
 			} else {
-				print "The SVM thinks it's small tiles!\n";
+				print "$count -> The SVM thinks it's small tiles! Value: $svmValue";
 			}
 		} elsif($svmValue == 0) {
-			print "The SVM thinks there's no tiles here.\n";
+			print "$count -> The SVM thinks there's no tiles here. Value: $svmValue";
 		} else {
-			print "The SVM thinks it's medium tiles!\n";
+			print "$count -> The SVM thinks it's medium tiles! Value: $svmValue";
 		}
 	} elsif($svmValue == 0) {
-		print "The SVM thinks there's no tiles here.\n";
+		print "$count -> The SVM thinks there's no tiles here. Value: $svmValue";
 	} else {
-		print "The SVM thinks it's large tiles!\n";
+		print "$count -> The SVM thinks it's large tiles! Value: $svmValue";
 	}
+	
+	$count+= 6;
 }
 
