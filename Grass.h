@@ -14,20 +14,38 @@
 using namespace cv;
 using namespace std;
 
-vector<Scalar> nextGrass(Mat frame){
-    vector<Scalar> output;
+double getDistance(const Mat &imgOrignal, double origH, double origS, double origV){
 
-    vector<vector<Mat> > splitImages;
-    split(frame, splitImages, 3, 1);
+    vector<Mat> channels;
+    split(imgOrignal, channels);
+    double h = (mean(channels[0])[0]) - origH;
+    double s = (mean(channels[1])[0]) - origS;
+    double v = (mean(channels[2])[0]) - origV;
 
-    //computes mean over roi
-    Scalar avgPixelIntensityLeft = cv::mean( splitImages[0][0] );
-    Scalar avgPixelIntensityRight = cv::mean( splitImages[2][0] );
+    return sqrt(h*h+s*s+v*v);
+}
 
-    output.push_back(avgPixelIntensityLeft);
-    output.push_back(avgPixelIntensityRight);
+vector<int> nextGrass(Mat frame){
+    vector<int> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
 
-    return output;
+    //groen herkennen
+    int iHighH = 98;
+    int iHighS = 129;
+    int iHighV = 123;
+    vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
+    split(frame,blokjes, 3, 1);//default 3x3, opgeven van dimensies ook mogelijk!
+
+    //outfile << argv[1];
+    for (int i = 0; i<blokjes.size(); i++){
+        for (int j = 0; j<blokjes[i].size(); j++){
+            int afstand = getDistance(blokjes[i][j], iHighH, iHighS, iHighV);
+
+            featurevector.push_back(afstand);
+        }
+    }
+
+    return featurevector;
+
 }
 
 

@@ -147,7 +147,9 @@ release/example.o: ../example.cpp ../../opencv/release/install/include/opencv/cv
 		../../opencv/release/install/include/opencv2/highgui.hpp \
 		../../opencv/release/install/include/opencv2/imgproc/imgproc.hpp \
 		../../opencv/release/install/include/opencv2/imgproc.hpp \
-		../Squares.h
+		../Squares.h \
+		../SplitImage.h \
+		../Grass.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\example.o ..\example.cpp
 
 ####### Install

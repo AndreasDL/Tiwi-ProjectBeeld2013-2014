@@ -88,19 +88,14 @@ int main( int argc, char** argv ) {
 //    countHistory.push_back(*(new vector<int>));
 //    countHistory.push_back(*(new vector<int>));
 
+//    ofstream outDat;
+//    outDat.open("halfFrame.dat", ios_base::app);
+//    ofstream outCsv;
+//    outCsv.open("halfFrame.csv", ios_base::app);
+
     ofstream outDat;
-    outDat.open("halfFrame.dat", ios_base::app);
-    ofstream outCsv;
-    outCsv.open("halfFrame.csv", ios_base::app);
-
-    ofstream outColorCsv;
-    outColorCsv.open("color.csv", ios_base::app);
-    ofstream outColorDat;
-    outColorDat.open("color.dat", ios_base::app);
-
+    outDat.open("featurevectors.dat", ios_base::app);
     while(!frame.empty()){
-
-        imshow("orig", frame);
         //cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
 //        imshow("orig",frame);
 
@@ -122,6 +117,8 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
+        vector<int> grassFeatures = nextGrass(frame);
+
         contrastShizzle(frame, frame);
 
 //        //Make the image negative
@@ -133,27 +130,24 @@ int main( int argc, char** argv ) {
 //                     <<";"<<nextSquares(frame, 5000, 10000)
 //                     <<";"<<nextSquares(frame, 10000, 100000)<<endl;
 
-//        vector<int> counts = nextSquares(frame, minSizes, maxSizes);
-////        countHistory[(framenr / 10) % 3] = counts;
+        vector<int> counts = nextSquares(frame, minSizes, maxSizes);
+//        countHistory[(framenr / 10) % 3] = counts;
 
-//        for(int countIt = 0; countIt < counts.size(); countIt++){
-////            if(framenr > 30){
-////                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
-////            }
-////            else
+        for(int countIt = 0; countIt < counts.size(); countIt++){
+//            if(framenr > 30){
+//                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
+//            }
+//            else
 //                outDat<<" "<<countIt +1<<":"<<counts[countIt];
 //                outCsv<<";"<<counts[countIt];
-////            cout<<counts[countIt]<<";";
-//        }
-//        outDat<<" #"<<framenr<<endl;
+//            cout<<counts[countIt]<<";";
+            outDat<<" "<<countIt + 1<<":"<<counts[countIt];
+        }
+        outDat<<" "<<counts.size() +1<<":"<<grassFeatures[0]<<" "<<counts.size()+2<<":"<<grassFeatures[2];
+        outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
 
-        vector<Scalar> colorOutput = nextGrass(frame);
-        for(int ci = 0; ci < 6;  ci++){
-//            outColorDat<<" "<<ci +1<<":"<<colorOutput[(int) ci * 0.3][ci % 3];
-//            outColorCsv<<";"<<colorOutput[(int) ci * 0.3][ci % 3];
-            cout<<" "<<ci +1<<":"<<colorOutput[(int) ci * 0.3][ci % 3];
-        }
+
 //        outColorDat<<" #"<<framenr<<endl;
 //        outColorCsv<<";"<<framenr<<endl;
 
@@ -179,10 +173,10 @@ int main( int argc, char** argv ) {
         //  ###########################
         //  ######### Restart #########
         //  ###########################
-        for(int it = 0; it < 5; it++){
-            framenr++;
-            readVideo.grab();
-        }
+//        for(int it = 0; it < 5; it++){
+//            framenr++;
+//            readVideo.grab();
+//        }
         framenr++;
         readVideo >> frame;
         cout<<framenr<<endl;

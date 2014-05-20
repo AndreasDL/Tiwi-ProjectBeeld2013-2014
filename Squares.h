@@ -196,7 +196,7 @@ void update(int, void*){
     split(image, splitImages, 1, 2);
     image = splitImages[0][1];
     findSquares(splitImages[0][1], squares);
-    drawSquares(image, squares);
+//    drawSquares(image, squares);
 }
 
 

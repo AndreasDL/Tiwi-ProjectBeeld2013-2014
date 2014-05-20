@@ -1,0 +1,12 @@
+1 - grote tegels start (gras rechts)
+2 - kleine tegels: overgang grote tegels naar straat (gras links rechts)
+3 - straat
+4 - zandweg (gras links rechts)
+5 - kleine tegels sporthal (gras links)
+6 - grote tegels sporthal (gras links) 
+7 - onzichtbare tegels sporthal (gras links)
+8 - onzichtbare tegels struikweg (geel links)
+9 - middel tegels st-denijslaan (geen gras)
+9 - kleine tegels st-denijslaan (geen gras)
+10 - zebrapad (geen tegels)
+11 - geen tegels (weg in station)
