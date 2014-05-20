@@ -12,13 +12,17 @@
 #include "splitter.h"
 #include "filters.h"
 
+
+//usage get_hsv inputfile
 using namespace std;
 using namespace cv;
 
+float matToVal(const Mat &img);
+
 int main( int argc, char** argv ) {
 
-	VideoCapture readVideo;
-    readVideo.open(argv[2]);
+    VideoCapture readVideo;
+    readVideo.open(argv[1]);
     Mat frame;
 
     readVideo >> frame;
@@ -27,26 +31,23 @@ int main( int argc, char** argv ) {
         return 1;
     }
 
-
     int framenr = 0;
-    string filename = argv[2];
-    	
-	ofstream outfile;
-	outfile.open(argv[3], ios_base::app);
-
-    while(!frame.empty()){
-		Mat imgHSV;
-		cvtColor(frame, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from ?? to HSV
 	
-        double h, s, v;
-		getHSV(imgHSV, h, s, v);
-		outfile << argv[1] << " 1:" << h << " 2:" << s << " 3:" << v << endl;
+    while(!frame.empty()){
+        vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
+        
+		double h,s,v;
+		int afstand = getHSV(frame, h, s, v);
+		cout  << h << " " << s << "  " << v << endl;
+		
+        //  ###########################
+        //  ######### Restart #########
+        //  ###########################
+
         framenr++;
         readVideo >> frame;
-        waitKey(1);
+        //waitKey(1);
     }
-	
-	
-	return 0;
-	
+    //waitKey(0);
+    return 0;
 }

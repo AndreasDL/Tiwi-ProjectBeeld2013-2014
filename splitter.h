@@ -4,7 +4,7 @@
 using namespace cv;
 using namespace std;
 
-void split(const Mat &input,vector<vector<Mat> > &output,const int dimX = 3, const int dimY = 3){
+void split(const Mat &input, vector<vector<Mat> > &output,const int dimX = 3, const int dimY = 3){
 	output.clear();
 	output.resize(dimX);
 
