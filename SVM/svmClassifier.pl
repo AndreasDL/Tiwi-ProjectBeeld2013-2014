@@ -3,7 +3,7 @@ my $svmLearn = "svm_perf_learn.exe";
 my $svmClassify = "svm_perf_classify.exe";
 
 # Variable initialization
-my $inputFile = "featurevectors.dat";
+my $inputFile = "featurevectorsALL.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
 my $modelMiddel = "modelTegelMiddel.dat";
@@ -11,6 +11,8 @@ my $modelKlein = "modelTegelKlein.dat";
 
 my $modelGrasLinks = "modelGrasLinks.dat";
 my $modelGrasRechts = "modelGrasRechts.dat";
+
+my $modelGeel = "modelGeel.dat";
 
 ##########################################
 # Subs here
@@ -158,7 +160,7 @@ while (<INFILE>) {
 		}
 	}
 	
-	$count+= 6;
+	$count++;
 }
 
 close(DAT);

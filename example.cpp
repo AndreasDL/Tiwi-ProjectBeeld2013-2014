@@ -10,10 +10,11 @@
 #include <fstream>
 #include <opencv2/core/core.hpp>
 //#include "fileWriter.h" //dees gaan we der echt wel uithalen
-#include "filters.h"
+//#include "filters.h"
 //#include "Canny.h"
 #include "Squares.h"
 #include "Grass.h"
+#include "Yellow.h"
 
 using namespace std;
 using namespace cv;
@@ -133,6 +134,7 @@ int main( int argc, char** argv ) {
         vector<int> counts = nextSquares(frame, minSizes, maxSizes);
 //        countHistory[(framenr / 10) % 3] = counts;
 
+        outDat<<"-1";
         for(int countIt = 0; countIt < counts.size(); countIt++){
 //            if(framenr > 30){
 //                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
@@ -143,7 +145,9 @@ int main( int argc, char** argv ) {
 //            cout<<counts[countIt]<<";";
             outDat<<" "<<countIt + 1<<":"<<counts[countIt];
         }
-        outDat<<" "<<counts.size() +1<<":"<<grassFeatures[0]<<" "<<counts.size()+2<<":"<<grassFeatures[2];
+        outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[2];
+
+        outDat<<" 6:"<<yellowFilter(frame);
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
 

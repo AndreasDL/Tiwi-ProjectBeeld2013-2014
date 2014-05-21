@@ -27,4 +27,5 @@ HEADERS += \
     ../Canny.h \
     ../Squares.h \
     ../Grass.h \
-    ../SplitImage.h
+    ../SplitImage.h \
+    ../Yellow.h

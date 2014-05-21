@@ -149,7 +149,8 @@ debug/example.o: ../example.cpp ../../opencv/release/install/include/opencv/cv.h
 		../../opencv/release/install/include/opencv2/imgproc.hpp \
 		../Squares.h \
 		../SplitImage.h \
-		../Grass.h
+		../Grass.h \
+		../Yellow.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o debug\example.o ..\example.cpp
 
 ####### Install
