@@ -3,7 +3,7 @@ my $svmLearn = "svm_perf_learn.exe";
 my $svmClassify = "svm_perf_classify.exe";
 
 # Variable initialization
-my $inputFile = "featurevectorsALL.dat";
+my $inputFile = "featurevectors_ALL.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
 my $modelMiddel = "modelTegelMiddel.dat";
@@ -28,21 +28,21 @@ sub checkTileSize{
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
 	#print "svmGroot: $svmValue\n";
-	
+
 	if($svmValue < 0) {
 		`$svmClassify tmp_dat.dat $modelMiddel tmp_predictions`;
 		open(DAT, "tmp_predictions");
 		my @lines = <DAT>;
 		my $svmValue = $lines[0];
 		#print "svmMiddel: $svmValue\n";	
-		
+
 		if($svmValue < 0) {
 			`$svmClassify tmp_dat.dat $modelKlein tmp_predictions`;
 			open(DAT, "tmp_predictions");
 			my @lines = <DAT>;
 			my $svmValue = $lines[0];
 			#print "svmKlein: $svmValue\n";
-			
+
 			if($svmValue < 0) {
 				#print "$count -> The SVM has no clue..\n";
 				return -1;
@@ -71,11 +71,11 @@ sub checkTileSize{
 
 sub checkGrassLeft{
 	`$svmClassify tmp_dat.dat $modelGrasLinks tmp_predictions`;
-	
+
 	open(DAT, "tmp_predictions");
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
-	
+
 	if($svmValue > 0) {
 		return 1;
 	} else {
@@ -85,11 +85,24 @@ sub checkGrassLeft{
 
 sub checkGrassRight{
 	`$svmClassify tmp_dat.dat $modelGrasRechts tmp_predictions`;
-	
+
 	open(DAT, "tmp_predictions");
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
-	
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
+sub checkYellow{
+
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
 	if($svmValue > 0) {
 		return 1;
 	} else {
@@ -109,9 +122,9 @@ while (<INFILE>) {
 	open(DATWR, ">tmp_dat.dat");
 	print DATWR $_;
 	`$svmClassify tmp_dat.dat $modelGroot tmp_predictions`;
-	
+
 	my $tileSize = checkTileSize();
-	
+
 	if($tileSize == -1){
 		print "The SVM has no clue\n";
 	}	
@@ -119,7 +132,10 @@ while (<INFILE>) {
 	elsif($tileSize == 0){
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
-		if($grassLeft == 1 && $grassRight == 1){
+		my $yellow = checkYellow($_);
+		if ($yellow == 1 && ($grassLeft == 1 || $grassRight == 1){
+			print "$count -> Zone 3\n";
+		} elsif($grassLeft == 1 && $grassRight == 1){
 			print "$count -> Zone 4\n";
 		} elsif($grassLeft == 1 && $grassRight == -1){
 			print "$count -> Zone 7\n";
@@ -159,7 +175,7 @@ while (<INFILE>) {
 			print "$count -> Large\n";
 		}
 	}
-	
+
 	$count++;
 }
 

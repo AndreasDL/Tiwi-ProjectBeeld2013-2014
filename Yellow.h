@@ -22,7 +22,7 @@ int iHighSY = 150;
 int iLowV = 124;
 int iHighV = 102;
 
-int iLowVY = 200;
+int iLowVY = 150;
 int iHighVY = 255;
 
 int yellowFilter(const Mat &imgOriginal){
