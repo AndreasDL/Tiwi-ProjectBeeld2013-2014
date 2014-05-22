@@ -145,7 +145,7 @@ int main( int argc, char** argv ) {
 //            cout<<counts[countIt]<<";";
             outDat<<" "<<countIt + 1<<":"<<counts[countIt];
         }
-        outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[2];
+        outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
 
         outDat<<" 6:"<<yellowFilter(frame);
         outDat<<" #"<<framenr<<endl;
