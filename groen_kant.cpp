@@ -37,12 +37,15 @@ int main( int argc, char** argv ) {
 	outfile.open(argv[3], ios_base::app);
 	
 	// namedWindow("00");
-	// namedWindow("01");
+	namedWindow("film");
 	// namedWindow("02");
 	
     while(!frame.empty()){
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
-        
+		imshow("film",frame);
+		
+        cvtColor(frame, frame, COLOR_BGR2HSV);
+		
         //groen herkennen
 		int iHighH = 73;
 		int iHighS = 109;
@@ -78,7 +81,7 @@ int main( int argc, char** argv ) {
 
         framenr++;
         readVideo >> frame;
-        //waitKey(1);
+        waitKey(1);
     }
     //waitKey(0);
     return 0;
