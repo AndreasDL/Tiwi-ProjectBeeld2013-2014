@@ -26,20 +26,30 @@ double getDistance(const Mat &imgOrignal, double origH, double origS, double ori
 }
 
 vector<int> nextGrass(Mat frame){
-    vector<int> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
+    cvtColor(frame, frame, COLOR_BGR2HSV);
 
     //groen herkennen
-    int iHighH = 98;
-    int iHighS = 129;
-    int iHighV = 123;
+    int iHighH = 73;
+    int iHighS = 109;
+    int iHighV = 94;
+
+    vector<int> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
+
     vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
     split(frame,blokjes, 3, 1);//default 3x3, opgeven van dimensies ook mogelijk!
 
-    //outfile << argv[1];
     for (int i = 0; i<blokjes.size(); i++){
-        for (int j = 0; j<blokjes[i].size(); j++){
-            int afstand = getDistance(blokjes[i][j], iHighH, iHighS, iHighV);
+        for (int j = 0; j<blokjes[i].size(); j+=2){
 
+            //Dit stuk in 9 kappen
+            vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
+            split(blokjes[i][j],kleineblokjes);//default 3x3, opgeven van dimensies ook mogelijk!
+            double afstand=9999999999;
+            for (int x = 0; x<blokjes.size(); x++){
+                for (int y = 0; y<blokjes[i].size(); y++){
+                    afstand = min(afstand, getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV));
+                }
+            }
             featurevector.push_back(afstand);
         }
     }
