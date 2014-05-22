@@ -14,7 +14,7 @@ double getDistance(const Mat &imgOrignal, double origH, double origS, double ori
 	inRange(tmp, Scalar(35, 20, 100), Scalar(75, 255, 255), uit); //Threshold the image => enkel groen over houden
 	tmp.copyTo(uitvoer, uit);
 	
-	uitvoer = (tmp + 1 * uitvoer)/2;
+	uitvoer = (tmp + 4 * uitvoer)/5;
 	vector<Mat> channels;
 	split(uitvoer, channels);
 	int aantalWit = (countNonZero(uit)+1);
