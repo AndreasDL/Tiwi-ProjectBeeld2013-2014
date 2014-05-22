@@ -42,12 +42,13 @@ int main( int argc, char** argv ) {
 	
     while(!frame.empty()){
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
-		imshow("film",frame);
+		// resize(frame, frame, Size(640,480));
+		// imshow("film",frame);
 		
         cvtColor(frame, frame, COLOR_BGR2HSV);
 		
         //groen herkennen
-		int iHighH = 73;
+		int iHighH = 110;
 		int iHighS = 109;
 		int iHighV = 94;
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
