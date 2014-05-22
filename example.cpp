@@ -95,9 +95,7 @@ int main( int argc, char** argv ) {
 		}
 
         //wit => zebrapad
-        Mat white;
         featurevector.push_back(zebraFilter(frame));
-        //imshow("white",white);
 
 
         

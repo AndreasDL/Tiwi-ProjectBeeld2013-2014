@@ -153,26 +153,26 @@ static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
 
 
 double zebraFilter(const Mat &img) {//, Mat &out){
-    /*
-    int minVal=170;
-    int maxVal=225;
-    int blurVal=30;
-    
+    //eventueel nog een perspectief toevoegen
+    int minVal=150;
+    int maxVal=175;
+    int blurVal=3;
     int thresh = 50;
-    cvtColor(img,out,COLOR_BGR2GRAY);
-    blur( out,out, Size(blurVal,blurVal) );
-    threshold(out,out,minVal,maxVal,0);
 
-    Mat t;
-    img.copyTo(t,out);*/
+    Mat t; Mat out;
+    cvtColor(img,t,COLOR_BGR2GRAY);
+    blur( t,t, Size(blurVal,blurVal) );
+    threshold(t,t,minVal,maxVal,0);
+
+    img.copyTo(out,t);
 
     //Werkt beter zonder witte filtering, blurren zorgt ervoor dat vervormt wordt & werkt het vuil dus niet
     vector<vector<Point> > squares;
-    findSquares(img,squares,150000,180000);
-/*
-    Mat out;
-    img.copyTo(out);
-    drawSquares(out,squares);*/
+    findSquares(out,squares,150000,180000);
+
+    //Mat out;
+    //t.copyTo(out);
+    drawSquares(out,squares);
     return squares.size();
     //cout << "\nfound " << squares.size() << " squares" << endl;
 }
