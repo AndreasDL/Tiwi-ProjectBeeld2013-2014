@@ -10,6 +10,17 @@ using namespace std;
 
 
 double getDistance(const Mat &imgOriginal, double origH, double origS, double origV){
+
+	int iLowH = 29;
+	int iHighH = 94;
+
+	int iLowS = 45; 
+	int iHighS = 255;
+
+	int iLowV = 36;
+	int iHighV = 255;
+	
+	
 	Mat tmp, uit, rood, rood2;
 	Mat uitvoer;
 	
@@ -19,7 +30,7 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 	rood = rood | rood2;
 	
 	
-	inRange(tmp, Scalar(30, 10, 10), Scalar(100, 255, 255), uit); //Threshold the image => enkel groen over houden
+	inRange(tmp, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), uit); //Threshold the image => enkel groen over houden
 	tmp.copyTo(uitvoer, uit);
 	
 	
@@ -47,25 +58,25 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 	s+= (mean(channels2[1])[0]) - origS;
 	v+= (mean(channels2[2])[0]) - origV;
 	
-	if (fractie<0.25){
-		straf += 20;
-		// cout << "staf deel" << endl;
+	if (fractie<0.1){
+		straf += 40 / (fractie+1.0);
+		cout << "staf deel" << endl;
 	} else if (fractie > 0.50){
 		straf -=20;
-		// cout << "bonus deel" << endl;
+		cout << "bonus deel" << endl;
 	}
 	// cout << "S: " << (mean(channels2[1])[0]) << endl;
 	if ((mean(channels2[1])[0]) < 30 ){
 		straf+= 20;
-		// cout << "staf S" << endl;
+		cout << "staf S" << endl;
 	}
 	
 	if (fractieRood>0.25){
 		straf += fractieRood * 60 * (0.75-fractie);
-		// cout << "staf rood - "<< fractie << endl;
+		cout << "staf rood - "<< fractie << endl;
 	}
 	
-	// cout << "Score: " << sqrt(h*h+s*s+v*v) + straf << endl;
+	cout << "Score: " << sqrt(h*h+s*s+v*v) + straf << endl;
 	
 	// cvtColor(uitvoer, uitvoer, COLOR_HSV2BGR);
 	// cvtColor(tmp, tmp, COLOR_HSV2BGR);
@@ -76,6 +87,29 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 	
 	
 	return sqrt(h*h+s*s+v*v) + straf;
+}
+
+double getAantal(const Mat &imgOriginal, double origH, double origS, double origV){
+	int iLowH = 29;
+	int iHighH = 94;
+
+	int iLowS = 45; 
+	int iHighS = 255;
+
+	int iLowV = 36;
+	int iHighV = 255;
+	Mat uit;
+	inRange(imgOriginal, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), uit); //Threshold the image => enkel groen over houden
+	
+	//morphological opening (remove small objects from the foreground)
+	erode(uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+	dilate( uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+
+	//morphological closing (fill small holes in the foreground)
+	dilate( uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) ); 
+	erode(uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+		
+	return countNonZero(uit);
 }
 
 
@@ -94,18 +128,19 @@ vector<float> getGroen(Mat frame){
 	for (int i = 0; i<2; i++){
 	
 		// Dit stuk in 9 kappen
-		vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
-		split(blokjes[i*2][0],kleineblokjes, 3, 3);//default 3x3, opgeven van dimensies ook mogelijk!
+		// vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
+		// split(blokjes[i*2][0],kleineblokjes, 3, 3);//default 3x3, opgeven van dimensies ook mogelijk!
 		
-		double afstand=9999999999;
-		for (int x = 0; x<kleineblokjes.size(); x++){
-			for (int y = 0; y<kleineblokjes[x].size(); y++){
-				double tmpAfstand = getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV);
-				if (afstand > tmpAfstand){
-					afstand = tmpAfstand;
-				}
-			}
-		}
+		double afstand = getAantal(blokjes[i*2][0], iHighH, iHighS, iHighV);
+		// double afstand=9999999999;
+		// for (int x = 0; x<kleineblokjes.size(); x++){
+			// for (int y = 0; y<kleineblokjes[x].size(); y++){
+				// double tmpAfstand = getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV);
+				// if (afstand > tmpAfstand){
+					// afstand = tmpAfstand;
+				// }
+			// }
+		// }
 		waarden.push_back(afstand);
 	}
 	
