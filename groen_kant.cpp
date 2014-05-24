@@ -48,7 +48,7 @@ int main( int argc, char** argv ) {
         cvtColor(frame, frame, COLOR_BGR2HSV);
 		
         //groen herkennen
-		int iHighH = 110;
+		int iHighH = 60;
 		int iHighS = 109;
 		int iHighV = 94;
         vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
@@ -62,7 +62,8 @@ int main( int argc, char** argv ) {
 			
 				//Dit stuk in 9 kappen
 				vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
-				split(blokjes[i][j],kleineblokjes);//default 3x3, opgeven van dimensies ook mogelijk!
+				split(blokjes[i][j],kleineblokjes, 3, 3);//default 3x3, opgeven van dimensies ook mogelijk!
+				
 				double afstand=9999999999;
 				for (int x = 0; x<blokjes.size(); x++){
 					for (int y = 0; y<blokjes[i].size(); y++){
@@ -73,13 +74,19 @@ int main( int argc, char** argv ) {
 				outfile  << " " << (j+1) + i * blokjes[i].size() << ":" << afstand;
 			}
 		}
-		outfile <<" #" << framenr << endl;
-		cout <<" #" << framenr << endl;
+		
+		outfile <<" #" << framenr << " @ " << argv[2] << endl;
+		cout <<" #" << framenr << " @ " << argv[2] << endl;
 		
         //  ###########################
         //  ######### Restart #########
         //  ###########################
 
+		// cvtColor(frame, frame, COLOR_HSV2BGR);
+		// imshow("film", frame);
+		// waitKey(0);
+		
+		
         framenr++;
         readVideo >> frame;
         waitKey(1);
