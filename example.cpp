@@ -46,77 +46,21 @@ int main( int argc, char** argv ) {
 //  #################################
 
     int framenr = 0;
-    //string filename = argv[2];
-    //remove(filename.c_str());
     namedWindow("orig");
-	namedWindow("00");
-	namedWindow("00orig");
-	
-	// for (int y = 0 ; y < 3 ; y++){
-		// for (int x = 0 ; x < 3 ; x++){
-			// namedWindow(""+x+y);
-		// }
-	// }
 		
     while(!frame.empty()){
-        // cvtColor(frame,frame,CV_RGB2GRAY); => grijs waarden overhouden
-        // imshow("orig",frame);
+        imshow("orig",frame);
 
         //  ################################################
         //  ######### DOE ZOTTE SHIT MET UW FRAMES #########
         //  ################################################
         
         vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
+        featurevector = (getGroen(frame));
         
-        //groen herkennen
-        vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
-        split(frame,blokjes);//default 3x3, opgeven van dimensies ook mogelijk!
-
-		
-		
-		Mat green;
-		greenFilter(blokjes[0][2],green);
-		imshow("00",green);
-		imshow("00orig",blokjes[0][2]);
-		/*
-        
-		for (int i = 0; i<blokjes.size(); i++){
-			for (int j = 0; j<blokjes[i].size(); j++){
-				greenFilter(blokjes[i][j],green);
-				imshow(""+i+j,green);
-				//imshow("filter",green);
-			}
-		}*/
-        
-        ///*featurevector.push_back(*/matToVal(green);//);
-        
-
-
-        //andere filters
-        
-        
-        
-
-
-        //  ######################################################
-        //  ######### SCHRIJF UW FEATURES NAAR TEXTFILES #########
-        //  ######################################################
-
-//                writeToFile(filename,0);
-//                writeSpace(filename);
-
-            for(int i=0; i<featurevector.size(); i++){
-                cout << featurevector.at(i) << " ";
-//                    writeToFile(filename,i+1);
-//                    writeDoublePoint(filename);
-//                writeToFile(filename,featurevector.at(i));
-//                writeSpace(filename);
-
-//                if(i!=featurevector.size()-1) writeDoublePoint(filename);
-            }
-//            writeEndl(filename);
-//            cout << endl;
-
+		for(int i=0; i<featurevector.size(); i++){
+			cout << featurevector.at(i) << " ";
+		}
         //  ###########################
         //  ######### Restart #########
         //  ###########################
@@ -125,26 +69,6 @@ int main( int argc, char** argv ) {
         readVideo >> frame;
         waitKey(1);
     }
-//    }
     waitKey(0);
     return 0;
 }
-/*
-float matToVal(const Mat &img){
-    //matrix omzetten naar getal
-    Size s = img.size();
-    int cols = s.width;
-    int rows = s.height;
-    cout << cols << endl << rows << endl;
-
-    double totaal = 0;
-    for (int y  = 0 ; y < rows ; y++){
-        for (int x =0 ; x < cols ; x++){
-            totaal += img.at<double>(x,y);
-            cout << totaal << endl;
-        }
-    }
-    return totaal/(cols*rows);
-
-
-}*/

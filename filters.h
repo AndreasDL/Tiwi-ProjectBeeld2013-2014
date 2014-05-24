@@ -6,6 +6,9 @@
 using namespace cv;
 using namespace std;
 
+
+
+
 double getDistance(const Mat &imgOriginal, double origH, double origS, double origV){
 	Mat tmp, uit, rood, rood2;
 	Mat uitvoer;
@@ -52,7 +55,7 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 		// cout << "bonus deel" << endl;
 	}
 	// cout << "S: " << (mean(channels2[1])[0]) << endl;
-	if ((mean(channels2[1])[0]) < 50 ){
+	if ((mean(channels2[1])[0]) < 30 ){
 		straf+= 20;
 		// cout << "staf S" << endl;
 	}
@@ -62,7 +65,7 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 		// cout << "staf rood - "<< fractie << endl;
 	}
 	
-	// cout << "Score: " << sqrt(h*h+s*s+v*v) + straf << endl << endl;
+	// cout << "Score: " << sqrt(h*h+s*s+v*v) + straf << endl;
 	
 	// cvtColor(uitvoer, uitvoer, COLOR_HSV2BGR);
 	// cvtColor(tmp, tmp, COLOR_HSV2BGR);
@@ -73,6 +76,40 @@ double getDistance(const Mat &imgOriginal, double origH, double origS, double or
 	
 	
 	return sqrt(h*h+s*s+v*v) + straf;
+}
+
+
+vector<float> getGroen(Mat frame){
+	vector<float> waarden;
+	cvtColor(frame, frame, COLOR_BGR2HSV);
+	
+	//groenwaarden om afstand te berekenen
+	int iHighH = 60;
+	int iHighS = 109;
+	int iHighV = 94;
+	
+	vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
+	split(frame,blokjes, 3, 1);//default 3x3, opgeven van dimensies ook mogelijk!
+	
+	for (int i = 0; i<2; i++){
+	
+		// Dit stuk in 9 kappen
+		vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
+		split(blokjes[i*2][0],kleineblokjes, 3, 3);//default 3x3, opgeven van dimensies ook mogelijk!
+		
+		double afstand=9999999999;
+		for (int x = 0; x<kleineblokjes.size(); x++){
+			for (int y = 0; y<kleineblokjes[x].size(); y++){
+				double tmpAfstand = getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV);
+				if (afstand > tmpAfstand){
+					afstand = tmpAfstand;
+				}
+			}
+		}
+		waarden.push_back(afstand);
+	}
+	
+	return waarden;
 }
 
 double getHSV(const Mat &imgOrignal, double &h, double &s, double &v){

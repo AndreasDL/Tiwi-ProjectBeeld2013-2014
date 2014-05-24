@@ -59,15 +59,19 @@ int main( int argc, char** argv ) {
 		outfile << argv[1];
 		for (int i = 0; i<blokjes.size(); i++){
 			for (int j = 0; j<blokjes[i].size(); j++){
-			
+				// imshow("film",frame);
 				//Dit stuk in 9 kappen
 				vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
 				split(blokjes[i][j],kleineblokjes, 3, 3);//default 3x3, opgeven van dimensies ook mogelijk!
 				
 				double afstand=9999999999;
-				for (int x = 0; x<blokjes.size(); x++){
-					for (int y = 0; y<blokjes[i].size(); y++){
-						afstand = min(afstand, getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV));
+				double groot = afstand;
+				for (int x = 0; x<kleineblokjes.size(); x++){
+					for (int y = 0; y<kleineblokjes[x].size(); y++){
+						double tmpAfstand = getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV);
+						if (afstand > tmpAfstand){
+							afstand = tmpAfstand;
+						}
 					}
 				}
 				cout  << " " << (j+1) + i * blokjes[i].size() << ":" << afstand;
