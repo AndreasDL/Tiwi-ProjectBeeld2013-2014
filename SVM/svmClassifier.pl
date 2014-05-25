@@ -3,7 +3,7 @@ my $svmLearn = "svm_perf_learn.exe";
 my $svmClassify = "svm_perf_classify.exe";
 
 # Variable initialization
-my $inputFile = "featurevectors_ALL.dat";
+my $inputFile = "featurevectors.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
 my $modelMiddel = "modelTegelMiddel.dat";
@@ -13,6 +13,10 @@ my $modelGrasLinks = "modelGrasLinks.dat";
 my $modelGrasRechts = "modelGrasRechts.dat";
 
 my $modelGeel = "modelGeel.dat";
+
+#Cache size of 10
+#value 0 = no clue
+@cache = (1,1,1,1,1,1,1,1,1 ,1);
 
 ##########################################
 # Subs here
@@ -98,7 +102,8 @@ sub checkGrassRight{
 }
 
 sub checkYellow{
-
+	`$svmClassify tmp_dat.dat $modelGeel tmp_predictions`;
+	
 	open(DAT, "tmp_predictions");
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
@@ -110,6 +115,21 @@ sub checkYellow{
 	}
 }
 
+sub findRegion{
+	my %resultSet = ();
+	foreach $region(@cache){
+		$resultSet{$region}++;
+	}
+	my $region = 0;
+	while(my ($k, $v) = each %resultSet ){
+		if($v > $resultSet{$region}){
+			$region = $k;
+		}
+	}
+	
+	return $region;
+}
+
 
 ##########################################
 # Program starts here
@@ -118,6 +138,7 @@ sub checkYellow{
 # SVM stuff
 open (INFILE , $inputFile)  or die "Can't open $inputFile: $!";
 my $count = 0;
+
 while (<INFILE>) {
 	open(DATWR, ">tmp_dat.dat");
 	print DATWR $_;
@@ -126,23 +147,32 @@ while (<INFILE>) {
 	my $tileSize = checkTileSize();
 
 	if($tileSize == -1){
-		print "The SVM has no clue\n";
+		#print "The SVM has no clue\n";
+		$cache[$count%10] = 0;
 	}	
 	#Geen
 	elsif($tileSize == 0){
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
 		my $yellow = checkYellow($_);
-		if ($yellow == 1 && $grassRight == 1 && $grassLeft == -1){
-			print "$count -> Zone 3\n"; #gele kleur in straatje in begin, volgens killian links geen gras daar en rechts wel
-		} elsif($yellow == 1 && $grassLeft == 1 && $grassRight == -1){
-			print "$count -> Zone 8\n"; #gele kleur bij de struiken, links wel gras, rechts geen
+		if ($yellow == 1 && $grassRight == 1){
+			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
+			$cache[$count%10] = 3;
+		} elsif($yellow == 1 && $grassLeft == 1){
+			#print "$count -> Zone 8\n"; #gele kleur bij de struiken, links wel gras, rechts geen
+			$cache[$count%10] = 8;
 		} elsif($grassLeft == 1 && $grassRight == 1){
-			print "$count -> Zone 4\n";
+			#print "$count -> Zone 4\n";
+			$cache[$count%10] = 4;
 		} elsif($grassLeft == 1 && $grassRight == -1){
-			print "$count -> Zone 7\n";
+			#print "$count -> Zone 7\n";
+			$cache[$count%10] = 7;
+		} elsif($grassLeft == -1 && $grassRight == -1 && $yellow == -1){
+			#print "$count -> Zone 10 of 11\n";
+			$cache[$count%10] = 10;
 		} else {
-			print "$count -> None\n";
+			#print "$count -> None, grassLeft $grassLeft, grassRight $grassRight, yellow $yellow\n";
+			$cache[$count%10] = 0;
 		}
 	}
 	#Klein
@@ -150,33 +180,41 @@ while (<INFILE>) {
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
 		if($grassLeft == 1 && $grassRight == 1){
-			print "$count -> Zone 2\n";
+			#print "$count -> Zone 2\n";
+			$cache[$count%10] = 2;
 		} elsif($grassLeft == 1 && $grassRight == -1){
-			print "$count -> Zone 5\n";
-		} elsif($grassLeft == -1 && $grassRight == -1){
-			print "$count -> Zone 9\n";
+			#print "$count -> Zone 5\n";
+			$cache[$count%10] = 5;
+		} elsif($grassLeft == -1){
+			#print "$count -> Zone 9\n";
+			$cache[$count%10] = 9;
 		} else {
-			print "$count -> Small\n";
+			#print "$count -> Small, grassLeft $grassLeft, grassRight $grassRight\n";
+			$cache[$count%10] = 0;
 		}
 	}
 	#Middel
 	elsif($tileSize == 2){
-		print "$count -> Zone 9\n";
+		#print "$count -> Zone 9\n";
+		$cache[$count%10] = 9;
 	}
 	#Groot
 	elsif($tileSize == 3){
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
-		if($grassLeft == -1 && $grassRight == 1){
-			print "$count -> Zone 1\n";
-		} elsif ($grassLeft == 1 && $grassRight == -1){
-			print "$count -> Zone 6\n";
-		} elsif ($grassLeft == -1 && grassRight == -1){
-			print "$count -> Zone 10 of 11\n";
+		if($grassRight == 1){
+			#print "$count -> Zone 1\n";
+			$cache[$count%10] = 1;
+		} elsif ($grassLeft == 1){
+			#print "$count -> Zone 6\n";
+			$cache[$count%10] = 6;
 		} else {
-			print "$count -> Large\n";
+			#print "$count -> Zone 10 of 11\n";
+			$cache[$count%10] = 10;
 		}
 	}
+	$selectedRegion = findRegion();
+	print "$count -> $selectedRegion\n";
 
 	$count++;
 }
