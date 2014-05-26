@@ -10,7 +10,7 @@
 #include <fstream>
 #include <opencv2/core/core.hpp>
 #include "splitter.h"
-#include "filters.h"
+#include "zebra.h"
 
 using namespace std;
 using namespace cv;
@@ -75,11 +75,11 @@ int main( int argc, char** argv ) {
         imshow("orig",frame);
 
         //Afbeelding splitsen in 3x3
-        vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
-        split(frame,blokjes,dimX,dimY);//default 3x3, opgeven van dimensies ook mogelijk!
+        //vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
+        //split(frame,blokjes,dimX,dimY);//default 3x3, opgeven van dimensies ook mogelijk!
 		
 		//groen => gras
-		Mat green;
+		//Mat green;
 		//enkel blok 0, 2 => links onder
         /*
         featurevector.push_back(greenFilter(blokjes[0][2],green));
@@ -87,13 +87,12 @@ int main( int argc, char** argv ) {
 		imshow("orig",blokjes[0][2]);
 		*/
         //alle blokjes
-		for (int y = 0; y< blokjes.size(); y++){
+		/*for (int y = 0; y< blokjes.size(); y++){
 			for (int x = 0; x< blokjes[y].size(); x++){
 				featurevector.push_back(greenFilter(blokjes[x][y],green)); //opslaan in feature vector
 				//imshow(descX[x]+descY[y],green); //weergeven
 			}
-		}
-
+		}*/
         //wit => zebrapad
         featurevector.push_back(zebraFilter(frame));
 

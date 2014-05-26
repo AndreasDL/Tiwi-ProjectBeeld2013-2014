@@ -6,48 +6,34 @@
 
 using namespace cv;
 using namespace std;
-int iLowH = 19;
-int iHighH = 43;
-int iLowS = 87; 
-int iHighS = 87;
-int iLowV = 124;
-int iHighV = 102;
-int iDistance = 60;
-double iHighGreen = sqrt(iHighH*iHighH + iHighS*iHighS + iHighV*iHighV);
-double iLowGreen = sqrt(iLowH*iLowH + iLowS*iLowS + iLowV*iLowV);
 
+bool squareEdgeRatio(const vector<Point> &square, double ratioMin, double ratioMax){
+    //returns true if ratio of square is between min & max.
+    double minX = square[0].x;
+    double minY = square[0].y;
+    double maxX = square[0].x;
+    double maxY = square[0].y;
 
-double getDistance(const Mat &imgOrignal, double origH, double origS, double origV){
+    for (int i = 1 ; i < square.size(); i++){
+        if (square[i].x < minX)
+            minX = square[i].x;
+        else if (square[i].x > maxX)
+            maxX = square[i].x;
 
-	vector<Mat> channels;
-	split(imgOrignal, channels);
-    double h = (mean(channels[0])[0]) - origH;
-    double s = (mean(channels[1])[0]) - origS;
-    double v = (mean(channels[2])[0]) - origV;
-	
-	return sqrt(h*h+s*s+v*v);
+        if (square[i].y < minY)
+            minY = square[i].y;
+        else if (square[i].y > maxY)
+            maxY = square[i].y;
+    }
+    double rat = (maxY - minY) / (maxX - minX);
+/*
+    cout << "-x:" << minX << " +x:" << maxX 
+        << " -y" << minY << " +y" << maxY
+        << " ratio:" << rat << endl;
+*/
+    return rat > ratioMin && rat < ratioMax ;
+
 }
-
-double greenFilter(const Mat &imgOriginal, Mat &output){ 
-    Mat imgHSV;
-    cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from ?? to HSV
-	output = imgHSV;
-    
-	double dist = getDistance(imgHSV, iHighH,iHighS,iHighV);
-
-	if (dist > iDistance){
-		vector<Mat> channels;
-		split(imgHSV, channels);
-		double h = (mean(channels[0])[0]);
-		double s = (mean(channels[1])[0]);
-		double v = (mean(channels[2])[0]);
-		output.setTo(cv::Scalar(h,s,v)); //show mean color
-		cvtColor(output, output, COLOR_HSV2BGR);
-	}
-	
-    return dist;
-}
-
 static double angle( Point pt1, Point pt2, Point pt0 )
 {
     double dx1 = pt1.x - pt0.x;
@@ -57,7 +43,7 @@ static double angle( Point pt1, Point pt2, Point pt0 )
     return (dx1*dx2 + dy1*dy2)/sqrt((dx1*dx1 + dy1*dy1)*(dx2*dx2 + dy2*dy2) + 1e-10);
 }
 
-static void findSquares( const Mat& image, vector<vector<Point> >& squares, int minSize,int maxSize ){
+static void findSquaresWithRatio( const Mat& image, vector<vector<Point> >& squares, int minSize,int maxSize ,double minRat, double maxRat){
     int N = 11;
     squares.clear();
 
@@ -130,7 +116,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares, int 
                     // if cosines of all angles are small
                     // (all angles are ~90 degree) then write quandrange
                     // vertices to resultant sequence
-                    if( maxCosine < 0.3 )
+                    if( maxCosine < 0.3 && squareEdgeRatio(approx,minRat,maxRat))
                         squares.push_back(approx);
                 }
             }
@@ -138,7 +124,7 @@ static void findSquares( const Mat& image, vector<vector<Point> >& squares, int 
     }
 }
 
-static void drawSquares( Mat& image, const vector<vector<Point> >& squares )
+static void zebra_drawSquares( Mat& image, const vector<vector<Point> >& squares )
 {
     for( size_t i = 0; i < squares.size(); i++ )
     {
@@ -158,6 +144,8 @@ double zebraFilter(const Mat &img) {//, Mat &out){
     int maxVal=175;
     int blurVal=3;
     int thresh = 50;
+    double minRat = 0.16;
+    double maxRat = 0.30;
 
     Mat t; Mat out;
     cvtColor(img,t,COLOR_BGR2GRAY);
@@ -168,11 +156,11 @@ double zebraFilter(const Mat &img) {//, Mat &out){
 
     //Werkt beter zonder witte filtering, blurren zorgt ervoor dat vervormt wordt & werkt het vuil dus niet
     vector<vector<Point> > squares;
-    findSquares(out,squares,150000,180000);
+    findSquaresWithRatio(out,squares,150000,180000,minRat,maxRat);
 
     //Mat out;
     //t.copyTo(out);
-    drawSquares(out,squares);
+    zebra_drawSquares(out,squares);
     return squares.size();
     //cout << "\nfound " << squares.size() << " squares" << endl;
 }
