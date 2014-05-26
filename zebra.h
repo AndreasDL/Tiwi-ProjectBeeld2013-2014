@@ -144,6 +144,8 @@ double zebraFilter(const Mat &img) {//, Mat &out){
     int maxVal=175;
     int blurVal=3;
     int thresh = 50;
+    int minsize = 150000;
+    int maxsize = 180000;
     double minRat = 0.16;
     double maxRat = 0.30;
 
@@ -156,7 +158,7 @@ double zebraFilter(const Mat &img) {//, Mat &out){
 
     //Werkt beter zonder witte filtering, blurren zorgt ervoor dat vervormt wordt & werkt het vuil dus niet
     vector<vector<Point> > squares;
-    findSquaresWithRatio(out,squares,150000,180000,minRat,maxRat);
+    findSquaresWithRatio(out,squares,minsize,maxsize,minRat,maxRat);
 
     //Mat out;
     //t.copyTo(out);
