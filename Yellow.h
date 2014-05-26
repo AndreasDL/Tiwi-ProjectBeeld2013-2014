@@ -27,11 +27,12 @@ int iHighVY = 255; //255
 
 int yellowFilter(const Mat &imgOriginal){
 
-    namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+    //Patrick doe uw controle venster ke weg
+    //namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
     //Create trackbars in "Control" window
-    cvCreateTrackbar("HighH", "Control", &iHighHY, 255);
+    /*cvCreateTrackbar("HighH", "Control", &iHighHY, 255);
     cvCreateTrackbar("HighS", "Control", &iHighSY, 255);
-    cvCreateTrackbar("HighV", "Control", &iHighVY, 255);
+    cvCreateTrackbar("HighV", "Control", &iHighVY, 255);*/
 
     Mat imgHSV;
     cvtColor(imgOriginal, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from ?? to HSV

@@ -15,6 +15,7 @@
 #include "Squares.h"
 #include "Grass.h"
 #include "Yellow.h"
+#include "zebra.h"
 
 using namespace std;
 using namespace cv;
@@ -58,7 +59,7 @@ int main( int argc, char** argv ) {
     int framenr = 0;
     //string filename = argv[2];
     //remove(filename.c_str());
-    namedWindow("orig",CV_WINDOW_NORMAL);
+    //namedWindow("orig",CV_WINDOW_NORMAL);
 //    namedWindow("filter");
 
 //    createHarrisWindow();
@@ -118,6 +119,8 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
+
+        int zebraFeatures = zebraFilter(frame); //moet ervoor want kilian zit te moosen met kleurenruimte
         vector<int> grassFeatures = nextGrass(frame);
 
         contrastShizzle(frame, frame);
@@ -148,6 +151,8 @@ int main( int argc, char** argv ) {
         outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
 
         outDat<<" 6:"<<yellowFilter(frame);
+        outDat<<" 7:"<<zebraFeatures;
+
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
 
