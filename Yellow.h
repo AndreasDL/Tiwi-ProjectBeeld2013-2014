@@ -11,19 +11,19 @@ int iLowH = 19;
 int iHighH = 43;
 
 int iLowHY = 20;
-int iHighHY = 25;
+int iHighHY = 24; // 25
 
 int iLowS = 87;
 int iHighS = 87;
 
-int iLowSY = 40;
-int iHighSY = 150;
+int iLowSY = 55; //40
+int iHighSY = 255; //150
 
 int iLowV = 124;
 int iHighV = 102;
 
-int iLowVY = 150;
-int iHighVY = 255;
+int iLowVY = 150; //150
+int iHighVY = 255; //255
 
 int yellowFilter(const Mat &imgOriginal){
 
