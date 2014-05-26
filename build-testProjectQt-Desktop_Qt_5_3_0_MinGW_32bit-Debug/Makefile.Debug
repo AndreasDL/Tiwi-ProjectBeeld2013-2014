@@ -142,12 +142,11 @@ debug/example.o: ../example.cpp ../../opencv/release/install/include/opencv/cv.h
 		../../opencv/release/install/include/opencv/highgui.h \
 		../../opencv/release/install/include/opencv2/highgui/highgui_c.h \
 		../../opencv/release/install/include/opencv2/core/core.hpp \
-		../filters.h \
-		../../opencv/release/install/include/opencv2/highgui/highgui.hpp \
-		../../opencv/release/install/include/opencv2/highgui.hpp \
+		../Squares.h \
 		../../opencv/release/install/include/opencv2/imgproc/imgproc.hpp \
 		../../opencv/release/install/include/opencv2/imgproc.hpp \
-		../Squares.h \
+		../../opencv/release/install/include/opencv2/highgui/highgui.hpp \
+		../../opencv/release/install/include/opencv2/highgui.hpp \
 		../SplitImage.h \
 		../Grass.h \
 		../Yellow.h

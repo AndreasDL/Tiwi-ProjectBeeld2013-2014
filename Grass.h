@@ -14,42 +14,47 @@
 using namespace cv;
 using namespace std;
 
-double getDistance(const Mat &imgOrignal, double origH, double origS, double origV){
+double getAantal(const Mat &imgOriginal, double origH, double origS, double origV){
+    int iLowH = 29;
+    int iHighH = 94;
 
-    vector<Mat> channels;
-    split(imgOrignal, channels);
-    double h = (mean(channels[0])[0]) - origH;
-    double s = (mean(channels[1])[0]) - origS;
-    double v = (mean(channels[2])[0]) - origV;
+    int iLowS = 45;
+    int iHighS = 255;
 
-    return sqrt(h*h+s*s+v*v);
+    int iLowV = 36;
+    int iHighV = 255;
+    Mat uit;
+    inRange(imgOriginal, Scalar(iLowH, iLowS, iLowV), Scalar(iHighH, iHighS, iHighV), uit); //Threshold the image => enkel groen over houden
+
+    //morphological opening (remove small objects from the foreground)
+    erode(uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    dilate( uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+
+    //morphological closing (fill small holes in the foreground)
+    dilate( uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+    erode(uit, uit, getStructuringElement(MORPH_ELLIPSE, Size(5, 5)) );
+
+    return countNonZero(uit);
 }
 
 vector<int> nextGrass(Mat frame){
     cvtColor(frame, frame, COLOR_BGR2HSV);
 
     //groen herkennen
-    int iHighH = 73;
+    int iHighH = 60;
     int iHighS = 109;
     int iHighV = 94;
 
-    vector<int> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
+    vector<int> featurevector;
 
     vector<vector<Mat> > blokjes; //afbeelding in 9 stukken kappen
     split(frame,blokjes, 3, 1);//default 3x3, opgeven van dimensies ook mogelijk!
 
-    for (int i = 0; i<blokjes.size(); i++){
-        for (int j = 0; j<blokjes[i].size(); j+=2){
+    for (int i = 0; i<blokjes.size(); i+=2){
+        for (int j = 0; j<blokjes[i].size(); j++){
 
-            //Dit stuk in 9 kappen
-            vector<vector<Mat> > kleineblokjes; //afbeelding in 9 stukken kappen
-            split(blokjes[i][j],kleineblokjes);//default 3x3, opgeven van dimensies ook mogelijk!
-            double afstand=9999999999;
-            for (int x = 0; x<blokjes.size(); x++){
-                for (int y = 0; y<blokjes[i].size(); y++){
-                    afstand = min(afstand, getDistance(kleineblokjes[x][y], iHighH, iHighS, iHighV));
-                }
-            }
+            //Dit stuk in 3 kappen
+            double afstand = getAantal(blokjes[i][j], iHighH, iHighS, iHighV);
             featurevector.push_back(afstand);
         }
     }
