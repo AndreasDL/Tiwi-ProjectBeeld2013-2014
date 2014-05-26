@@ -155,19 +155,12 @@ while (<INFILE>) {
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
 		my $yellow = checkYellow($_);
-<<<<<<< HEAD
-		if ($yellow == 1 && $grassRight == 1 && $grassLeft == -1){
-			print "$count -> Zone 3\n"; #gele kleur in straatje in begin, volgens killian links geen gras daar en rechts wel
-		#} elsif($yellow == 1 && $grassLeft == 1 && $grassRight == -1){
-			#print "$count -> Zone 8\n"; #gele kleur bij de struiken, links wel gras, rechts geen
-=======
 		if ($yellow == 1 && $grassRight == 1){
 			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
 			$cache[$count%10] = 3;
 		} elsif($yellow == 1 && $grassLeft == 1){
 			#print "$count -> Zone 8\n"; #gele kleur bij de struiken, links wel gras, rechts geen
 			$cache[$count%10] = 8;
->>>>>>> 899f5f9b57048fe7fb3996748996f5bb143722d9
 		} elsif($grassLeft == 1 && $grassRight == 1){
 			#print "$count -> Zone 4\n";
 			$cache[$count%10] = 4;
