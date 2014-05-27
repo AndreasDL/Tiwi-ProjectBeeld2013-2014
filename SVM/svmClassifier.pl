@@ -146,6 +146,7 @@ sub findRegion{
 	foreach $region(@cache){
 		$resultSet{$region}++;
 	}
+
 	my $region = 0;
 	while(my ($k, $v) = each %resultSet ){
 		if($v > $resultSet{$region}){
@@ -199,6 +200,7 @@ while (<INFILE>) {
 			#print "$count -> Zone 10 of 11\n";
 			if($zebra == 1){
 				$cache[$count%10] = 10;
+				print "hoi";
 			} else {
 				$cache[$count%10] = 11;
 			}
