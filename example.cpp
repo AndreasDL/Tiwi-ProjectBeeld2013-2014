@@ -16,6 +16,7 @@
 #include "Grass.h"
 #include "Yellow.h"
 #include "zebra.h"
+#include "YellowRectangles.h"
 
 using namespace std;
 using namespace cv;
