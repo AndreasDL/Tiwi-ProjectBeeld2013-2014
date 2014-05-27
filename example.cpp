@@ -84,14 +84,6 @@ int main( int argc, char** argv ) {
         //  ################################################
         //  ######### DOE ZOTTE SHIT MET UW FRAMES #########
         //  ################################################
-        
-//        vector<float> featurevector;        // Vul hier uw getallekes in die uw frame gaan beschrijven = de featurevector
-        
-        //groen herkennen
-//        Mat green;
-//        greenFilter(frame,green);
-//        imshow("filter",green);
-        ///*featurevector.push_back(*/matToVal(green);//);
 
         //andere filters
 //        showNextLine(frame);
@@ -99,7 +91,7 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
-       int zebraFeatures = zebraFilter(frame);//:(
+//       int zebraFeatures = zebraFilter(frame);//:(
         vector<int> grassFeatures = nextGrass(frame);
 
 
@@ -128,7 +120,7 @@ int main( int argc, char** argv ) {
         }
         outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
         outDat<<" 6:"<<yellowFilter(frame);
-        outDat<<" 7:"<<counts[3];
+        //outDat<<" 7:"<<counts[3];
 
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
@@ -136,25 +128,6 @@ int main( int argc, char** argv ) {
 
 //        outColorDat<<" #"<<framenr<<endl;
 //        outColorCsv<<";"<<framenr<<endl;
-
-        //  ######################################################
-        //  ######### SCHRIJF UW FEATURES NAAR TEXTFILES #########
-        //  ######################################################
-
-//                writeToFile(filename,0);
-//                writeSpace(filename);
-
-//            for(int i=0; i<featurevector.size(); i++){
-//                cout << featurevector.at(i) << " ";
-//                    writeToFile(filename,i+1);
-//                    writeDoublePoint(filename);
-//                writeToFile(filename,featurevector.at(i));
-//                writeSpace(filename);
-
-//                if(i!=featurevector.size()-1) writeDoublePoint(filename);
-//            }
-//            writeEndl(filename);
-//            cout << endl;
 
         //  ###########################
         //  ######### Restart #########
@@ -170,26 +143,5 @@ int main( int argc, char** argv ) {
         if(waitKey(1) != -1)
             waitKey(-1);
     }
-//    }
-//    waitKey(0);
     return 0;
 }
-
-
-
-//float matToVal(const Mat &img){
-//    //matrix omzetten naar getal
-//    Size s = img.size();
-//    int cols = s.width;
-//    int rows = s.height;
-
-//    double totaal = 0;
-//    for (int y  = 0 ; y < rows ; y++){
-//        for (int x =0 ; x < cols ; x++){
-//            totaal += img.at<double>(x,y);
-//        }
-//    }
-//    return totaal/(cols*rows);
-
-
-//}
