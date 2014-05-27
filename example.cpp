@@ -99,7 +99,7 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
-        //int zebraFeatures = zebraFilter(frame);
+//        int zebraFeatures = zebraFilter(frame);//:(
         vector<int> grassFeatures = nextGrass(frame);
 
 
@@ -118,7 +118,7 @@ int main( int argc, char** argv ) {
         outDat<<"-1";
         for(int countIt = 0; countIt < counts.size()-1; countIt++){
 //            if(framenr > 30){
-//                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
+//                cout <</*" "<<countIt +1<<":"<</(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
 //            }
 //            else
 //                outDat<<" "<<countIt +1<<":"<<counts[countIt];
@@ -128,7 +128,7 @@ int main( int argc, char** argv ) {
         }
         outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
         outDat<<" 6:"<<yellowFilter(frame);
-        //outDat<<" 7:"<<counts[3];
+        outDat<<" 7:"<<counts[3];
 
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
