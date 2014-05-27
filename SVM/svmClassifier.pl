@@ -1,6 +1,6 @@
 # SVM programs
-my $svmLearn = "svm_perf_learn.exe";
-my $svmClassify = "svm_perf_classify.exe";
+#my $svmLearn = "svm_perf_learn.exe";
+my $svmClassify = "/home/drew/Downloads/svm/svm_perf_classify";#"svm_perf_classify.exe";
 
 # Variable initialization
 my $inputFile = "featurevectors.dat";
@@ -13,13 +13,27 @@ my $modelGrasLinks = "modelGrasLinks.dat";
 my $modelGrasRechts = "modelGrasRechts.dat";
 
 my $modelGeel = "modelGeel.dat";
+my $modelZebra = "modelZebra.dat";
 
 #Cache size of 10
 #value 0 = no clue
 @cache = (1,1,1,1,1,1,1,1,1 ,1);
 
-##########################################
-# Subs here
+#ability unlocked: using readable names!
+my @naamZones = ("no clue, i'm sorry",
+"grote tegels start (gras rechts)",
+"kleine tegels: overgang grote tegels naar straat (gras links rechts)",
+"straat - zandweg (gras links rechts)",
+"kleine tegels sporthal (gras links)",
+"grote tegels sporthal (gras links)",
+"onzichtbare tegels sporthal (gras links)",
+"onzichtbare tegels struikweg (geel links)",
+"middel tegels st-denijslaan (geen gras)",
+"kleine tegels st-denijslaan (geen gras)",
+"zebra (geen tegels)",
+"geen tegels (weg in station)"
+);
+
 ##########################################
 
 # -1 -> no clue
@@ -114,6 +128,18 @@ sub checkYellow{
 		return -1;
 	}
 }
+sub checkZebra{
+	`$svmClassify tmp_dat.dat $modelZebra tmp_predictions`;
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
 
 sub findRegion{
 	my %resultSet = ();
@@ -155,6 +181,8 @@ while (<INFILE>) {
 		my $grassLeft = checkGrassLeft($_);
 		my $grassRight = checkGrassRight($_);
 		my $yellow = checkYellow($_);
+		my $zebra = checkZebra($_);
+
 		if ($yellow == 1 && $grassRight == 1){
 			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
 			$cache[$count%10] = 3;
@@ -167,9 +195,13 @@ while (<INFILE>) {
 		} elsif($grassLeft == 1 && $grassRight == -1){
 			#print "$count -> Zone 7\n";
 			$cache[$count%10] = 7;
-		} elsif($grassLeft == -1 && $grassRight == -1 && $yellow == -1){
+		} elsif( $grassLeft == -1 && $grassRight == -1 && $yellow == -1){
 			#print "$count -> Zone 10 of 11\n";
-			$cache[$count%10] = 10;
+			if($zebra == 1){
+				$cache[$count%10] = 10;
+			} else {
+				$cache[$count%10] = 11;
+			}
 		} else {
 			#print "$count -> None, grassLeft $grassLeft, grassRight $grassRight, yellow $yellow\n";
 			$cache[$count%10] = 0;
@@ -209,12 +241,12 @@ while (<INFILE>) {
 			#print "$count -> Zone 6\n";
 			$cache[$count%10] = 6;
 		} else {
-			#print "$count -> Zone 10 of 11\n";
-			$cache[$count%10] = 10;
+			#print "$count -> Zone 10 of 11\n"; (station)
+			$cache[$count%10] = 11;
 		}
 	}
 	$selectedRegion = findRegion();
-	print "$count -> $selectedRegion\n";
+	print "$count -> $selectedRegion ($naamZones[$selectedRegion])\n";
 
 	$count++;
 }

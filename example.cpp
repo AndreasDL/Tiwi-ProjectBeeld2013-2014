@@ -37,31 +37,11 @@ int main( int argc, char** argv ) {
         return 1;
     }
 
-//    readVideo.set(CV_CAP_PROP_POS_MSEC, 1000 * 60 * 2);
-//    readVideo.set(CV_CAP_PROP_FPS, 1);
-
-//  ###################################################
-//  ###################################################
-//  ######### INTIALISEER FILTERS OF WHATEVER #########
-//  ###################################################
-//  ###################################################
-
-    
-    /*vector<Mat> lijn_afbeeldingen;*/
-    
-
-//  #################################
-//  #################################
-//  ######### Start reading #########
-//  #################################
-//  #################################
-
     int framenr = 0;
     //string filename = argv[2];
     //remove(filename.c_str());
     //namedWindow("orig",CV_WINDOW_NORMAL);
 //    namedWindow("filter");
-
 //    createHarrisWindow();
 //    createLineDetectionWindow();
 //    createFASTWindow();

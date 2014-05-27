@@ -28,4 +28,5 @@ HEADERS += \
     ../Squares.h \
     ../Grass.h \
     ../SplitImage.h \
-    ../Yellow.h
+    ../Yellow.h \
+    ../zebra.h
