@@ -14,6 +14,7 @@ my $modelGrasLinks = "modelGrasLinks.dat";
 my $modelGrasRechts = "modelGrasRechts.dat";
 
 my $modelGeel = "modelGeel.dat";
+my $modelGeelRechthoek = "modelYellowRectangle.dat";
 my $modelZebra = "modelZebra.dat";
 
 #Cache size of 10
@@ -169,6 +170,20 @@ sub checkYellow{
 	}
 }
 
+sub checkYellowRectangles{
+	`$svmClassify tmp_dat.dat $modelGeelRechthoek tmp_predictions`;
+	
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
 sub checkZebra{
 	`$svmClassify tmp_dat.dat $modelZebra tmp_predictions`;
 	open(DAT, "tmp_predictions");
@@ -218,12 +233,13 @@ while (<INFILE>) {
 	my $grassLeft = checkGrassLeft();
 	my $grassRight = checkGrassRight();
 	my $yellow = checkYellow();
+	my $yellowRectangle = checkYellowRectangles();
 	my $zebra = checkZebra();
 
 	
 	#Geen
 	if($largeTiles == -1 && $mediumTiles == -1 && $smallTiles == -1){
-		if ($yellow == 1 && $grassRight == 1){
+		if ($yellowRectangle == 1 && $grassRight == 1){
 			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
 			$cache[$count%$#cache] = 3;
 		} elsif($grassRight == 1){

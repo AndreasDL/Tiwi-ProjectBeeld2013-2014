@@ -121,7 +121,7 @@ int main( int argc, char** argv ) {
         outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
         outDat<<" 6:"<<yellowFilter(frame);
         //outDat<<" 7:"<<counts[3];
-
+		outDat<<" 7:"<< yellowRectangleFilter(frame);
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
 
