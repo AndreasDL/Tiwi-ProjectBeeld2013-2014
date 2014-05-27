@@ -18,7 +18,7 @@
 using namespace cv;
 using namespace std;
 
-int thresh = 50, maxThresh = 300, N = 11;
+int thresh = 650, maxThresh = 5000, N = 20;
 int threshOppMin = 100, maxThreshOppMin = 100000;
 int threshOppMax = 2000, maxThreshOppMax = 100000;
 
@@ -29,7 +29,7 @@ vector<vector<vector<Point> > >squares;
 vector<int> minSizes, maxSizes;
 
 const char* wndname = "Square Detection Demo";
-Mat image;
+Mat origImage, image;
 
 
 void update(int, void*);
@@ -50,13 +50,15 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 // the sequence is stored in the specified memory storage
 static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squares )
 {
+//    namedWindow("noisered", CV_WINDOW_NORMAL);
     Mat pyr, timg, gray0(image.size(), CV_8U), gray;
-
+    timg = image;
     // down-scale and upscale the image to filter out the noise
-    pyrDown(image, pyr, Size(image.cols/2, image.rows/2));
-    pyrUp(pyr, timg, image.size());
+//    pyrDown(image, pyr, Size(image.cols/2, image.rows/2));
+//    pyrUp(pyr, timg, image.size());
     vector<vector<Point> > contours;
 
+//    imshow("noisered", pyr);
     // find squares in every color plane of the image
     for( int c = 0; c < 3; c++ )
     {
@@ -64,25 +66,35 @@ static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squa
         mixChannels(&timg, 1, &gray0, 1, ch, 1);
 
         // try several threshold levels
-        for( int l = 0; l < N; l++ )
+        for( int l = 0; l < N; l+=5 )
         {
             // hack: use Canny instead of zero threshold level.
             // Canny helps to catch squares with gradient shading
             if( l == 0 )
             {
+//                namedWindow("canny", CV_WINDOW_NORMAL);
+//                createTrackbar( "Threshold: ", "canny", &thresh, maxThresh, update );
+//                namedWindow("dilate", CV_WINDOW_NORMAL);
                 // apply Canny. Take the upper threshold from slider
                 // and set the lower to 0 (which forces edges merging)
-                Canny(gray0, gray, 80, 200, 5);
+                Canny(gray0, gray, thresh, 3*thresh, 5);
+//                imshow("canny", gray);
                 // dilate canny output to remove potential
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
-                erode(gray, gray, Mat(), Point(-1,-1));
+//                imshow("dilate", gray);
             }
             else
             {
                 // apply threshold if l!=0:
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
+//                namedWindow("graythresh", CV_WINDOW_NORMAL);
+//                createTrackbar( "N: ", "graytresh", &N, 20, update );
+//                imshow("graytresh", gray);
+                erode(gray, gray, Mat(), Point(-1,-1));
+//                namedWindow("erode", CV_WINDOW_NORMAL);
+//                imshow("erode", gray);
             }
 
             // find contours and store them all as a list
@@ -122,7 +134,7 @@ static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squa
                             // if cosines of all angles are small
                             // (all angles are ~90 degree) then write quandrange
                             // vertices to resultant sequence
-                            if( maxCosine < 0.2 )
+                            if( maxCosine < 0.3 )
                                 squares[sizes].push_back(approx);
                         }
                     }
@@ -130,6 +142,37 @@ static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squa
             }
         }
     }
+}
+
+void contrastShizzle(const Mat &imgOriginal, Mat &output){
+
+    Mat outputLocal = Mat::zeros(imgOriginal.size(), imgOriginal.type());
+
+    /// Initialize values
+    //std::cout << " Basic Linear Transforms " << std::endl;
+    //std::cout << "-------------------------" << std::endl;
+    //std::cout << "* Enter the alpha value [1.0-3.0]: "; std::cin >> alpha;
+    //std::cout << "* Enter the beta value [0-100]: "; std::cin >> beta;
+
+//	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
+    //Create trackbars in "Control" window
+//	cvCreateTrackbar("alpha", "Control", &alpha, 20);
+    double a = 6 / 10.0;
+    a += 1;
+
+    /// Do the operation new_image(i,j) = alpha*image(i,j) + beta
+    for (int y = 0; y < imgOriginal.rows; y++)
+    {
+        for (int x = 0; x < imgOriginal.cols; x++)
+        {
+            for (int c = 0; c < 3; c++)
+            {
+                outputLocal.at<Vec3b>(y, x)[c] =
+                    saturate_cast<uchar>(a*(imgOriginal.at<Vec3b>(y, x)[c]) + 20);
+            }
+        }
+    }
+    output = outputLocal;
 }
 
 
@@ -172,7 +215,8 @@ void createSquaresWindow(){
 //}
 
 vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
-    image = src;
+    src.copyTo(origImage);
+    //contrastShizzle(origImage, origImage);
     minSizes = minSize;
     maxSizes = maxSize;
 
@@ -181,7 +225,8 @@ vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
         vector<vector<Point> > newVector;
         squares.push_back(newVector);
     }
-
+//    namedWindow("original", CV_WINDOW_NORMAL);
+//    imshow("original", origImage);
     update(0,0);
 
     vector<int> counts;
@@ -192,10 +237,16 @@ vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
 }
 
 void update(int, void*){
-    vector<vector<Mat> > splitImages;
-    split(image, splitImages, 1, 2);
-    image = splitImages[0][1];
-    findSquares(splitImages[0][1], squares);
+    //vector<vector<Mat> > splitImages;
+    //split(origImage, splitImages, 1, 2);
+    int width  = origImage.cols;
+    int height = origImage.rows * 0.6;
+    origImage( Rect(0, origImage.rows - height, width, height) ).copyTo(image);
+    thresh = 450;
+    findSquares(image, squares);
+    contrastShizzle(image, image);
+    //thresh = 650;
+    findSquares(image, squares);
 //    drawSquares(image, squares);
 }
 

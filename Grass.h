@@ -14,6 +14,8 @@
 using namespace cv;
 using namespace std;
 
+Mat frame;
+
 double getAantal(const Mat &imgOriginal, double origH, double origS, double origV){
     int iLowH = 29;
     int iHighH = 94;
@@ -37,8 +39,8 @@ double getAantal(const Mat &imgOriginal, double origH, double origS, double orig
     return countNonZero(uit);
 }
 
-vector<int> nextGrass(Mat frame){
-    cvtColor(frame, frame, COLOR_BGR2HSV);
+vector<int> nextGrass(Mat img){
+    cvtColor(img, frame, COLOR_BGR2HSV);
 
     //groen herkennen
     int iHighH = 60;

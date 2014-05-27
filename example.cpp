@@ -99,11 +99,9 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
-
-        int zebraFeatures = zebraFilter(frame); //moet ervoor want kilian zit te moosen met kleurenruimte
+        //int zebraFeatures = zebraFilter(frame);
         vector<int> grassFeatures = nextGrass(frame);
 
-        contrastShizzle(frame, frame);
 
 //        //Make the image negative
 //        Mat sub_mat = Mat::ones(frame.size(), frame.type())*255;
@@ -118,7 +116,7 @@ int main( int argc, char** argv ) {
 //        countHistory[(framenr / 10) % 3] = counts;
 
         outDat<<"-1";
-        for(int countIt = 0; countIt < counts.size(); countIt++){
+        for(int countIt = 0; countIt < counts.size()-1; countIt++){
 //            if(framenr > 30){
 //                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
 //            }
@@ -129,9 +127,8 @@ int main( int argc, char** argv ) {
             outDat<<" "<<countIt + 1<<":"<<counts[countIt];
         }
         outDat<<" 4:"<<grassFeatures[0]<<" 5:"<<grassFeatures[1];
-
         outDat<<" 6:"<<yellowFilter(frame);
-        outDat<<" 7:"<<zebraFeatures;
+        //outDat<<" 7:"<<counts[3];
 
         outDat<<" #"<<framenr<<endl;
 //        outCsv<<";"<<framenr<<endl;
@@ -178,36 +175,7 @@ int main( int argc, char** argv ) {
     return 0;
 }
 
-void contrastShizzle(const Mat &imgOriginal, Mat &output){
 
-    Mat outputLocal = Mat::zeros(imgOriginal.size(), imgOriginal.type());
-
-    /// Initialize values
-    //std::cout << " Basic Linear Transforms " << std::endl;
-    //std::cout << "-------------------------" << std::endl;
-    //std::cout << "* Enter the alpha value [1.0-3.0]: "; std::cin >> alpha;
-    //std::cout << "* Enter the beta value [0-100]: "; std::cin >> beta;
-
-//	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-    //Create trackbars in "Control" window
-//	cvCreateTrackbar("alpha", "Control", &alpha, 20);
-    double a = 6 / 10.0;
-    a += 1;
-
-    /// Do the operation new_image(i,j) = alpha*image(i,j) + beta
-    for (int y = 0; y < imgOriginal.rows; y++)
-    {
-        for (int x = 0; x < imgOriginal.cols; x++)
-        {
-            for (int c = 0; c < 3; c++)
-            {
-                outputLocal.at<Vec3b>(y, x)[c] =
-                    saturate_cast<uchar>(a*(imgOriginal.at<Vec3b>(y, x)[c]) + 20);
-            }
-        }
-    }
-    output = outputLocal;
-}
 
 //float matToVal(const Mat &img){
 //    //matrix omzetten naar getal

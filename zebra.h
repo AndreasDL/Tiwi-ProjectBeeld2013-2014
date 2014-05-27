@@ -124,7 +124,7 @@ static void findSquaresWithRatio( const Mat& image, vector<vector<Point> >& squa
     }
 }
 
-static void zebra_drawSquares( Mat& image, const vector<vector<Point> >& squares )
+static void zebra_drawSquares( Mat &image, const vector<vector<Point> >& squares )
 {
     for( size_t i = 0; i < squares.size(); i++ )
     {
@@ -133,12 +133,12 @@ static void zebra_drawSquares( Mat& image, const vector<vector<Point> >& squares
         polylines(image, &p, &n, 1, true, Scalar(0,255,0), 3, CV_AA);
     }
 
-    /*namedWindow("test",CV_WINDOW_AUTOSIZE);
-    imshow("test", image);*/
+    namedWindow("test",CV_WINDOW_AUTOSIZE);
+    imshow("test", image);
 }
 
 
-double zebraFilter(const Mat &img){
+double zebraFilter(const Mat img){
     //eventueel nog een perspectief toevoegen
     int minVal=150;
     int maxVal=175;
@@ -162,7 +162,7 @@ double zebraFilter(const Mat &img){
 
     //Mat out;
     //t.copyTo(out);
-    zebra_drawSquares(out,squares);
+//    zebra_drawSquares(out,squares);
     return squares.size();
     //cout << "\nfound " << squares.size() << " squares" << endl;
 }

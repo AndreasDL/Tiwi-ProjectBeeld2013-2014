@@ -1,6 +1,6 @@
 # SVM programs
 #my $svmLearn = "svm_perf_learn.exe";
-my $svmClassify = "/home/drew/Downloads/svm/svm_perf_classify";#"svm_perf_classify.exe";
+my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
 
 # Variable initialization
 my $inputFile = "featurevectors.dat";
@@ -22,7 +22,7 @@ my $modelZebra = "modelZebra.dat";
 #ability unlocked: using readable names!
 my @naamZones = ("no clue, i'm sorry",
 "grote tegels start (gras rechts)",
-"kleine tegels: overgang grote tegels naar straat (gras links rechts)",
+"kleine tegels: overgang naar straat (gras links rechts)",
 "straat - zandweg (gras links rechts)",
 "kleine tegels sporthal (gras links)",
 "grote tegels sporthal (gras links)",
@@ -42,6 +42,7 @@ my @naamZones = ("no clue, i'm sorry",
 #  2 -> medium
 #  3 -> large
 sub checkTileSize{
+	`$svmClassify tmp_dat.dat $modelGroot tmp_predictions`;
 	open(DAT, "tmp_predictions");
 	my @lines = <DAT>;
 	my $svmValue = $lines[0];
@@ -87,6 +88,45 @@ sub checkTileSize{
 	}
 }
 
+sub checkLargeTiles{
+	`$svmClassify tmp_dat.dat $modelGroot tmp_predictions`;
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
+sub checkMediumTiles{
+	`$svmClassify tmp_dat.dat $modelMiddel tmp_predictions`;
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
+sub checkSmallTiles{
+	`$svmClassify tmp_dat.dat $modelKlein tmp_predictions`;
+	open(DAT, "tmp_predictions");
+	my @lines = <DAT>;
+	my $svmValue = $lines[0];
+
+	if($svmValue > 0) {
+		return 1;
+	} else {
+		return -1;
+	}
+}
+
 sub checkGrassLeft{
 	`$svmClassify tmp_dat.dat $modelGrasLinks tmp_predictions`;
 
@@ -128,6 +168,7 @@ sub checkYellow{
 		return -1;
 	}
 }
+
 sub checkZebra{
 	`$svmClassify tmp_dat.dat $modelZebra tmp_predictions`;
 	open(DAT, "tmp_predictions");
@@ -169,21 +210,19 @@ my $count = 0;
 while (<INFILE>) {
 	open(DATWR, ">tmp_dat.dat");
 	print DATWR $_;
-	`$svmClassify tmp_dat.dat $modelGroot tmp_predictions`;
 
 	my $tileSize = checkTileSize();
+	my $largeTiles = checkLargeTiles();
+	my $mediumTiles = checkMediumTiles();
+	my $smallTiles = checkSmallTiles();
+	my $grassLeft = checkGrassLeft();
+	my $grassRight = checkGrassRight();
+	my $yellow = checkYellow();
+	my $zebra = checkZebra();
 
-	if($tileSize == -1){
-		#print "The SVM has no clue\n";
-		$cache[$count%10] = 0;
-	}	
+	
 	#Geen
-	elsif($tileSize == 0){
-		my $grassLeft = checkGrassLeft($_);
-		my $grassRight = checkGrassRight($_);
-		my $yellow = checkYellow($_);
-		my $zebra = checkZebra($_);
-
+	if($largeTiles == -1 && $mediumTiles == -1 && $smallTiles == -1){
 		if ($yellow == 1 && $grassRight == 1){
 			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
 			$cache[$count%10] = 3;
@@ -200,7 +239,6 @@ while (<INFILE>) {
 			#print "$count -> Zone 10 of 11\n";
 			if($zebra == 1){
 				$cache[$count%10] = 10;
-				print "hoi";
 			} else {
 				$cache[$count%10] = 11;
 			}
@@ -210,9 +248,7 @@ while (<INFILE>) {
 		}
 	}
 	#Klein
-	elsif($tileSize == 1){
-		my $grassLeft = checkGrassLeft($_);
-		my $grassRight = checkGrassRight($_);
+	elsif($smallTiles == 1){
 		if($grassLeft == 1 && $grassRight == 1){
 			#print "$count -> Zone 2\n";
 			$cache[$count%10] = 2;
@@ -228,14 +264,12 @@ while (<INFILE>) {
 		}
 	}
 	#Middel
-	elsif($tileSize == 2){
+	elsif($mediumTiles == 1){
 		#print "$count -> Zone 9\n";
 		$cache[$count%10] = 9;
 	}
 	#Groot
-	elsif($tileSize == 3){
-		my $grassLeft = checkGrassLeft($_);
-		my $grassRight = checkGrassRight($_);
+	elsif($largeTiles == 1){
 		if($grassRight == 1){
 			#print "$count -> Zone 1\n";
 			$cache[$count%10] = 1;
@@ -248,7 +282,8 @@ while (<INFILE>) {
 		}
 	}
 	$selectedRegion = findRegion();
-	print "$count -> $selectedRegion ($naamZones[$selectedRegion])\n";
+	#print "$count -> $selectedRegion ($naamZones[$selectedRegion])\n";
+	print "$count -> small: $smallTiles, medium: $mediumTiles, large: $largeTiles, grassLeft: $grassLeft, grassRight: $grassRight, yellow: $yellow, zebra: $zebra\n";
 
 	$count++;
 }
