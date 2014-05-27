@@ -3,7 +3,7 @@
 my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
 
 # Variable initialization
-my $inputFile = "featurevectors.dat";
+my $inputFile = "featurevectors_film_2.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
 my $modelMiddel = "modelTegelMiddel.dat";
@@ -17,7 +17,8 @@ my $modelZebra = "modelZebra.dat";
 
 #Cache size of 10
 #value 0 = no clue
-@cache = (1,1,1,1,1,1,1,1,1 ,1);
+@cache = (1,1,1,1,1,1,1,1,1 ,1, 1, 1, 1, 1, 1);
+$previousRegion = 0;
 
 #ability unlocked: using readable names!
 my @naamZones = ("no clue, i'm sorry",
@@ -26,10 +27,8 @@ my @naamZones = ("no clue, i'm sorry",
 "straat - zandweg (gras links rechts)",
 "kleine tegels sporthal (gras links)",
 "grote tegels sporthal (gras links)",
-"onzichtbare tegels sporthal (gras links)",
-"onzichtbare tegels struikweg (geel links)",
-"middel tegels st-denijslaan (geen gras)",
-"kleine tegels st-denijslaan (geen gras)",
+"sporthal en struikweg",
+"st-denijs",
 "zebra (geen tegels)",
 "geen tegels (weg in station)"
 );
@@ -225,65 +224,68 @@ while (<INFILE>) {
 	if($largeTiles == -1 && $mediumTiles == -1 && $smallTiles == -1){
 		if ($yellow == 1 && $grassRight == 1){
 			#print "$count -> Zone 3\n"; #gele kleur in straatje in begin
-			$cache[$count%10] = 3;
-		} elsif($yellow == 1 && $grassLeft == 1){
+			$cache[$count%$#cache] = 3;
+		} elsif($grassRight == 1){
+			$cache[$count%$#cache] = 3;
+		} elsif($grassLeft == 1){
 			#print "$count -> Zone 8\n"; #gele kleur bij de struiken, links wel gras, rechts geen
-			$cache[$count%10] = 8;
-		} elsif($grassLeft == 1 && $grassRight == 1){
-			#print "$count -> Zone 4\n";
-			$cache[$count%10] = 4;
-		} elsif($grassLeft == 1 && $grassRight == -1){
-			#print "$count -> Zone 7\n";
-			$cache[$count%10] = 7;
+			$cache[$count%$#cache] = 6;
+		} elsif($yellow == 1){
+			$cache[$count%$#cache] = 7;
 		} elsif( $grassLeft == -1 && $grassRight == -1 && $yellow == -1){
 			#print "$count -> Zone 10 of 11\n";
 			if($zebra == 1){
-				$cache[$count%10] = 10;
+				$cache[$count%$#cache] = 8;
 			} else {
-				$cache[$count%10] = 11;
+				$cache[$count%$#cache] = 9;
 			}
 		} else {
 			#print "$count -> None, grassLeft $grassLeft, grassRight $grassRight, yellow $yellow\n";
-			$cache[$count%10] = 0;
+			$cache[$count%$#cache] = 0;
 		}
 	}
 	#Klein
 	elsif($smallTiles == 1){
-		if($grassLeft == 1 && $grassRight == 1){
+		if($grassRight == 1 && $grassLeft == 1){
 			#print "$count -> Zone 2\n";
-			$cache[$count%10] = 2;
-		} elsif($grassLeft == 1 && $grassRight == -1){
+			$cache[$count%$#cache] = 2;
+		} elsif($grassLeft == 1){
 			#print "$count -> Zone 5\n";
-			$cache[$count%10] = 5;
-		} elsif($grassLeft == -1){
+			$cache[$count%$#cache] = 4;
+		} else{
 			#print "$count -> Zone 9\n";
-			$cache[$count%10] = 9;
-		} else {
-			#print "$count -> Small, grassLeft $grassLeft, grassRight $grassRight\n";
-			$cache[$count%10] = 0;
-		}
+			$cache[$count%$#cache] = 7;
+		} 
 	}
 	#Middel
 	elsif($mediumTiles == 1){
-		#print "$count -> Zone 9\n";
-		$cache[$count%10] = 9;
+		if($grassLeft == 1 && $yellow == 1){
+			$cache[$count%$#cache] = 6;
+		} else {
+			#print "$count -> Zone 9\n";
+			$cache[$count%$#cache] = 7;
+		}
 	}
 	#Groot
 	elsif($largeTiles == 1){
 		if($grassRight == 1){
 			#print "$count -> Zone 1\n";
-			$cache[$count%10] = 1;
+			$cache[$count%$#cache] = 1;
 		} elsif ($grassLeft == 1){
 			#print "$count -> Zone 6\n";
-			$cache[$count%10] = 6;
+			$cache[$count%$#cache] = 5;
 		} else {
 			#print "$count -> Zone 10 of 11\n"; (station)
-			$cache[$count%10] = 11;
+			$cache[$count%$#cache] = 9;
 		}
 	}
 	$selectedRegion = findRegion();
-	#print "$count -> $selectedRegion ($naamZones[$selectedRegion])\n";
-	print "$count -> small: $smallTiles, medium: $mediumTiles, large: $largeTiles, grassLeft: $grassLeft, grassRight: $grassRight, yellow: $yellow, zebra: $zebra\n";
+	if($selectedRegion - $previousRegion > 1 || $selectedRegion - $previousRegion < -1){
+		$selectedRegion = $previousRegion;
+	}
+	$previousRegion = $selectedRegion;
+	print "$count -> $selectedRegion ($naamZones[$selectedRegion])\n";
+	#print "$count -> small: $smallTiles, medium: $mediumTiles, large: $largeTiles, grassLeft: $grassLeft, grassRight: $grassRight, yellow: $yellow, zebra: $zebra\n";
 
 	$count++;
 }

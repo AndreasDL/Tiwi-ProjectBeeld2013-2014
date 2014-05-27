@@ -116,7 +116,7 @@ int main( int argc, char** argv ) {
 //        countHistory[(framenr / 10) % 3] = counts;
 
         outDat<<"-1";
-        for(int countIt = 0; countIt < counts.size()-1; countIt++){
+        for(int countIt = 0; countIt < counts.size(); countIt++){
 //            if(framenr > 30){
 //                cout <</*" "<<countIt +1<<":"<<*/(countHistory[0][countIt] + countHistory[1][countIt] + countHistory[2][countIt] + countHistory[3][countIt] + countHistory[4][countIt]) / 5;
 //            }
