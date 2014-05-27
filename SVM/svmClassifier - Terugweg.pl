@@ -3,6 +3,7 @@
 my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
 
 # Variable initialization
+#my $inputFile = "featurevectors_film_2_terug.dat";
 my $inputFile = "featurevectors_film_1_terug.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
@@ -18,7 +19,7 @@ my $modelZebra = "modelZebra.dat";
 #Cache size of 10
 #value 0 = no clue
 @cache = (8,8,8,8,8,8,8,8,8 ,8, 8, 8, 8, 8, 8);
-$previousRegion = 10;
+$previousRegion = 8;
 
 #ability unlocked: using readable names!
 my @naamZones = ("no clue, i'm sorry",
@@ -184,10 +185,9 @@ while (<INFILE>) {
 			if($zebra == 1){
 				$cache[$count%$#cache] = 8;
 			} else {
-				$cache[$count%$#cache] = 9;
+				$cache[$count%$#cache] = 8;#normaal 9
 			}
 		} else {
-			#print "$count -> None, grassLeft $grassLeft, grassRight $grassRight, yellow $yellow\n";
 			$cache[$count%$#cache] = 0;
 		}
 	}
@@ -223,11 +223,11 @@ while (<INFILE>) {
 			$cache[$count%$#cache] = 5;
 		} else {
 			#print "$count -> Zone 10 of 11\n"; (station)
-			$cache[$count%$#cache] = 9;
+			$cache[$count%$#cache] = 8;#normaal 9
 		}
 	}
 	$selectedRegion = findRegion();
-	if($selectedRegion - $previousRegion > 1 || $selectedRegion - $previousRegion < -1){
+	if($selectedRegion - $previousRegion > 2 || $selectedRegion - $previousRegion < -2){
 		$selectedRegion = $previousRegion;
 	}
 	$previousRegion = $selectedRegion;

@@ -3,7 +3,8 @@
 my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
 
 # Variable initialization
-my $inputFile = "featurevectors_film_2.dat";
+#my $inputFile = "featurevectors_film_1_heen.dat";
+my $inputFile = "featurevectors_film_2_heen.dat";
 
 my $modelGroot = "modelTegelGroot.dat";
 my $modelMiddel = "modelTegelMiddel.dat";
