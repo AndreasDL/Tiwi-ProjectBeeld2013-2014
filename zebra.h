@@ -117,7 +117,7 @@ static void findSquaresWithRatio( const Mat& image, vector<vector<Point> >& squa
         }
     }
 }
-
+*/
 static void zebra_drawSquares( Mat &image, const vector<vector<Point> >& squares )
 {
     for( size_t i = 0; i < squares.size(); i++ )
@@ -130,7 +130,7 @@ static void zebra_drawSquares( Mat &image, const vector<vector<Point> >& squares
     namedWindow("test",CV_WINDOW_AUTOSIZE);
     imshow("test", image);
 }
-*/
+
 double zebraFilter(const Mat &img){
     //eventueel nog een perspectief toevoegen
     int minVal=150;
@@ -145,13 +145,13 @@ double zebraFilter(const Mat &img){
     Mat t;
     pyrDown(img, t, Size(img.cols/2, img.rows/2));
     pyrUp(t, t, img.size());
+
     cvtColor(t,t,COLOR_BGR2GRAY);
+    //edges deruithalen
     blur( t,t, Size(blurVal,blurVal) );
     threshold(t,t,minVal,maxVal,0);
-    //Mat kernel = getStructuringElement(MORPH_RECT, Size(50,20));
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(15,5));
     //dilate(t,t,kernel);
-
-    //edges deruithalen
     Canny(t,t,100,100,3);
 
     //Houghtransform

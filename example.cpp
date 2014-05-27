@@ -99,7 +99,7 @@ int main( int argc, char** argv ) {
 //        showNext(frame);
 //        nextCanny(frame);
 
-//        int zebraFeatures = zebraFilter(frame);//:(
+       int zebraFeatures = zebraFilter(frame);//:(
         vector<int> grassFeatures = nextGrass(frame);
 
 
