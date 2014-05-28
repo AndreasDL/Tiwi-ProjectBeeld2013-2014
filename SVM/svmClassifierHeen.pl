@@ -1,13 +1,15 @@
-my $modelGroot = "models/modelTegelGroot.dat";
-my $modelMiddel = "models/modelTegelMiddel.dat";
-my $modelKlein = "models/modelTegelKlein.dat";
+use Cwd 'abs_path';
 
-my $modelGrasLinks = "models/modelGrasLinks.dat";
-my $modelGrasRechts = "models/modelGrasRechts.dat";
+my $modelGroot = abs_path("models/modelTegelGroot.dat");
+my $modelMiddel = abs_path("models/modelTegelMiddel.dat");
+my $modelKlein = abs_path("models/modelTegelKlein.dat");
 
-my $modelGeel = "models/modelGeel.dat";
-my $modelGeelRechthoek = "models/modelYellowRectangle.dat";
-my $modelZebra = "models/modelZebra.dat";
+my $modelGrasLinks = abs_path("models/modelGrasLinks.dat");
+my $modelGrasRechts = abs_path("models/modelGrasRechts.dat");
+
+my $modelGeel = abs_path("models/modelGeel.dat");
+my $modelGeelRechthoek = abs_path("models/modelYellowRectangle.dat");
+my $modelZebra = abs_path("models/modelZebra.dat");
 
 
 # SVM programs

@@ -1,0 +1,25 @@
+Intro
+Wat? Project beeldverwerking 2014
+Mappen?
+-> Code: code
+-> SVM: models & svm (linux & windows versie)
+-> bin: uitvoerbare binairies
+
+How to:
+Manual way:
+1. svm trainen , is reeds gebeurd & models staan in SVM/models
+
+2. Feature vectoren berekenen
+	-> run example (compiled voor linux 64 bit)
+	-> featurvectoren staan nu in featurevectors.dat
+3. Perl script voor het overlopen van alle frames
+	-> uitvoer: zone voor elk frame
+
+Script (linux):
+-> EasyFixAll-Classification.sh
+	-> verwijderd vorige featurevectors.dat !!
+	-> maakt nieuwe aan
+	-> draait perl script
+		-> uitvoer: zone bij elk frame
+		-> file: test.txt met bovenstaande uitvoer.
+-> Meer uitleg in script zelf
