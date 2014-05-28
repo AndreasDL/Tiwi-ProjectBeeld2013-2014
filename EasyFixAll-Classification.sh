@@ -1,21 +1,22 @@
-#achievement unlocked : shell scripting
+#Linux only, simulair approach for windows 
+#linux binairies are found in /bin => compiled on 64bit linux
+MOVIE_PATH='/home/drew/data/20140226_h_10fps.avi'
+
+RESULTS_NAME="test.txt"
+SVM_PATH="SVM/SVM_BIN_LINUX_64bit/svm_perf_classify"
 
 #cleanup
-rm featurevectors.dat SVM/featurevectors.dat;
+rm featurevectors.dat; #the results are appended to this file
 
 #create new featurevector
-./bin/example /home/drew/school\ 2013-2014/Beeldverwerking/project/dataProject/20140226_h_10fps.avi;
+echo "creating feature vector";
+./bin/example $MOVIE_PATH;
 
-#put in SVM dir
-mv featurevectors.dat SVM/;
+#put vectors in SVM dir
+#mv featurevectors.dat SVM/;
+#goto SVM dir to avoid workingdir probs#cd SVM;
 
-#goto SVM dir to avoid workingdir probs
-cd SVM;
 #classify
-perl svmClassifier.pl > SVM_RESULTS_ANDREAS_IS_COOL;
-
-#cleanup
-rm tmp_predictions tmp_dat.dat;
-
-#go back up
-cd ..;
+echo "classifiying this might take a while";
+perl svmClassifierHeen.pl $SVM_PATH "featurevectors.dat" > $RESULTS_NAME; #heenweg
+#perl svmClassifierTerug.pl $SVM_PATH "featurevectors.dat" > $RESULTS_NAME; #heenweg

@@ -1,20 +1,24 @@
+my $modelGroot = "models/modelTegelGroot.dat";
+my $modelMiddel = "models/modelTegelMiddel.dat";
+my $modelKlein = "models/modelTegelKlein.dat";
+
+my $modelGrasLinks = "models/modelGrasLinks.dat";
+my $modelGrasRechts = "models/modelGrasRechts.dat";
+
+my $modelGeel = "models/modelGeel.dat";
+my $modelZebra = "models/modelZebra.dat";
+
 # SVM programs
-#my $svmLearn = "svm_perf_learn.exe";
-my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
+my $svmClassify;# = "svm_perf_classify.exe";
+my $inputFile;# = "featurevectors_film_2_heen.dat";
+if ($#ARGV +1 != 2){
+	print "Usage : <location_of_svm> <inputfile>";
+	exit;
+}else{
+	$svmClassify = $ARGV[0];
+	$inputFile = $ARGV[1];
+}
 
-# Variable initialization
-#my $inputFile = "featurevectors_film_2_terug.dat";
-my $inputFile = "featurevectors_film_1_terug.dat";
-
-my $modelGroot = "modelTegelGroot.dat";
-my $modelMiddel = "modelTegelMiddel.dat";
-my $modelKlein = "modelTegelKlein.dat";
-
-my $modelGrasLinks = "modelGrasLinks.dat";
-my $modelGrasRechts = "modelGrasRechts.dat";
-
-my $modelGeel = "modelGeel.dat";
-my $modelZebra = "modelZebra.dat";
 
 #Cache size of 10
 #value 0 = no clue

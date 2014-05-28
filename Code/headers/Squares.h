@@ -48,17 +48,11 @@ static double angle( Point pt1, Point pt2, Point pt0 )
 
 // returns sequence of squares detected on the image.
 // the sequence is stored in the specified memory storage
-static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squares )
-{
-//    namedWindow("noisered", CV_WINDOW_NORMAL);
+static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squares ){
     Mat pyr, timg, gray0(image.size(), CV_8U), gray;
     timg = image;
-    // down-scale and upscale the image to filter out the noise
-//    pyrDown(image, pyr, Size(image.cols/2, image.rows/2));
-//    pyrUp(pyr, timg, image.size());
     vector<vector<Point> > contours;
 
-//    imshow("noisered", pyr);
     // find squares in every color plane of the image
     for( int c = 0; c < 3; c++ )
     {
@@ -66,35 +60,22 @@ static void findSquares( const Mat& image, vector<vector<vector<Point> > >& squa
         mixChannels(&timg, 1, &gray0, 1, ch, 1);
 
         // try several threshold levels
-        for( int l = 0; l < N; l+=5 )
-        {
+        for( int l = 0; l < N; l+=5 ) {
             // hack: use Canny instead of zero threshold level.
             // Canny helps to catch squares with gradient shading
-            if( l == 0 )
-            {
-//                namedWindow("canny", CV_WINDOW_NORMAL);
-//                createTrackbar( "Threshold: ", "canny", &thresh, maxThresh, update );
-//                namedWindow("dilate", CV_WINDOW_NORMAL);
+            if( l == 0 ) {
                 // apply Canny. Take the upper threshold from slider
                 // and set the lower to 0 (which forces edges merging)
                 Canny(gray0, gray, thresh, 3*thresh, 5);
-//                imshow("canny", gray);
+
                 // dilate canny output to remove potential
                 // holes between edge segments
                 dilate(gray, gray, Mat(), Point(-1,-1));
-//                imshow("dilate", gray);
-            }
-            else
-            {
+            }else{
                 // apply threshold if l!=0:
                 //     tgray(x,y) = gray(x,y) < (l+1)*255/N ? 255 : 0
                 gray = gray0 >= (l+1)*255/N;
-//                namedWindow("graythresh", CV_WINDOW_NORMAL);
-//                createTrackbar( "N: ", "graytresh", &N, 20, update );
-//                imshow("graytresh", gray);
                 erode(gray, gray, Mat(), Point(-1,-1));
-//                namedWindow("erode", CV_WINDOW_NORMAL);
-//                imshow("erode", gray);
             }
 
             // find contours and store them all as a list
@@ -148,15 +129,6 @@ void contrastShizzle(const Mat &imgOriginal, Mat &output){
 
     Mat outputLocal = Mat::zeros(imgOriginal.size(), imgOriginal.type());
 
-    /// Initialize values
-    //std::cout << " Basic Linear Transforms " << std::endl;
-    //std::cout << "-------------------------" << std::endl;
-    //std::cout << "* Enter the alpha value [1.0-3.0]: "; std::cin >> alpha;
-    //std::cout << "* Enter the beta value [0-100]: "; std::cin >> beta;
-
-//	namedWindow("Control", CV_WINDOW_AUTOSIZE); //create a window called "Control"
-    //Create trackbars in "Control" window
-//	cvCreateTrackbar("alpha", "Control", &alpha, 20);
     double a = 6 / 10.0;
     a += 1;
 
@@ -198,21 +170,12 @@ static void drawSquares( Mat& image, const vector<vector<vector<Point> > >& squa
     imshow(wndname, image);
 }
 
-
+/*
 void createSquaresWindow(){
 
     namedWindow( wndname, CV_WINDOW_NORMAL );
     createTrackbar( "Threshold: ", wndname, &thresh, maxThresh, update );
-//    createTrackbar( "Min opp: ", wndname, &threshOppMin, maxThreshOppMin, update );
-//    createTrackbar( "Max opp: ", wndname, &threshOppMax, maxThreshOppMax, update );
-}
-
-//vector<int> nextSquares(Mat src)
-//{
-//    image = src;
-//    update(0,0);
-//    return squares.size();
-//}
+}*/
 
 vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
     src.copyTo(origImage);
@@ -225,8 +188,6 @@ vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
         vector<vector<Point> > newVector;
         squares.push_back(newVector);
     }
-//    namedWindow("original", CV_WINDOW_NORMAL);
-//    imshow("original", origImage);
     update(0,0);
 
     vector<int> counts;
@@ -237,17 +198,13 @@ vector<int> nextSquares(Mat src, vector<int> minSize, vector<int> maxSize){
 }
 
 void update(int, void*){
-    //vector<vector<Mat> > splitImages;
-    //split(origImage, splitImages, 1, 2);
     int width  = origImage.cols;
     int height = origImage.rows * 0.6;
     origImage( Rect(0, origImage.rows - height, width, height) ).copyTo(image);
     thresh = 450;
     findSquares(image, squares);
     contrastShizzle(image, image);
-    //thresh = 650;
     findSquares(image, squares);
-//    drawSquares(image, squares);
 }
 
 

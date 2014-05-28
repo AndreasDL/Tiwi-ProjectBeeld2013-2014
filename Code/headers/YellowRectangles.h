@@ -9,8 +9,6 @@ int yellowRectangleFilter(Mat &imgOriginal){
 	Mat imgHSV;
 	Mat img = imgOriginal;
 	threshold(img, img, 235, 255, THRESH_TOZERO_INV);
-	namedWindow("tresh", WINDOW_AUTOSIZE);
-	imshow("tresh", img);
 	cvtColor(img, imgHSV, COLOR_BGR2HSV); //Convert the captured frame from ?? to HSV
 
 

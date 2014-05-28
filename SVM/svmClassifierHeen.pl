@@ -1,21 +1,27 @@
+my $modelGroot = "models/modelTegelGroot.dat";
+my $modelMiddel = "models/modelTegelMiddel.dat";
+my $modelKlein = "models/modelTegelKlein.dat";
+
+my $modelGrasLinks = "models/modelGrasLinks.dat";
+my $modelGrasRechts = "models/modelGrasRechts.dat";
+
+my $modelGeel = "models/modelGeel.dat";
+my $modelGeelRechthoek = "models/modelYellowRectangle.dat";
+my $modelZebra = "models/modelZebra.dat";
+
+
 # SVM programs
-#my $svmLearn = "svm_perf_learn.exe";
-my $svmClassify = "svm_perf_classify.exe"; #"/home/drew/Downloads/svm/svm_perf_classify";
+my $svmClassify;# = "svm_perf_classify.exe";
+my $inputFile;# = "featurevectors_film_2_heen.dat";
+if ($#ARGV +1 != 2){
+	print "Usage : <location_of_svm> <inputfile>";
+	exit;
+}else{
+	$svmClassify = $ARGV[0];
+	$inputFile = $ARGV[1];
+}
 
-# Variable initialization
-#my $inputFile = "featurevectors_film_1_heen.dat";
-my $inputFile = "featurevectors_film_2_heen.dat";
 
-my $modelGroot = "modelTegelGroot.dat";
-my $modelMiddel = "modelTegelMiddel.dat";
-my $modelKlein = "modelTegelKlein.dat";
-
-my $modelGrasLinks = "modelGrasLinks.dat";
-my $modelGrasRechts = "modelGrasRechts.dat";
-
-my $modelGeel = "modelGeel.dat";
-my $modelGeelRechthoek = "modelYellowRectangle.dat";
-my $modelZebra = "modelZebra.dat";
 
 #Cache size of 10
 #value 0 = no clue
@@ -223,9 +229,6 @@ open (INFILE , $inputFile)  or die "Can't open $inputFile: $!";
 my $count = 0;
 
 while (<INFILE>) {
-	open(DATWR, ">tmp_dat.dat");
-	print DATWR $_;
-
 	my $tileSize = checkTileSize();
 	my $largeTiles = checkLargeTiles();
 	my $mediumTiles = checkMediumTiles();
@@ -308,6 +311,3 @@ while (<INFILE>) {
 }
 
 close(DAT);
-close(DATWR);
-
-`del tmp_predictions tmp_dat.dat`
