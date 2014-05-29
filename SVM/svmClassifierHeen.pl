@@ -1,15 +1,28 @@
 use Cwd 'abs_path';
 
-my $modelGroot = abs_path("models/modelTegelGroot.dat");
-my $modelMiddel = abs_path("models/modelTegelMiddel.dat");
-my $modelKlein = abs_path("models/modelTegelKlein.dat");
+# my $modelGroot = abs_path("models/modelTegelGroot.dat");
+# my $modelMiddel = abs_path("models/modelTegelMiddel.dat");
+# my $modelKlein = abs_path("models/modelTegelKlein.dat");
 
-my $modelGrasLinks = abs_path("models/modelGrasLinks.dat");
-my $modelGrasRechts = abs_path("models/modelGrasRechts.dat");
+# my $modelGrasLinks = abs_path("models/modelGrasLinks.dat");
+# my $modelGrasRechts = abs_path("models/modelGrasRechts.dat");
 
-my $modelGeel = abs_path("models/modelGeel.dat");
-my $modelGeelRechthoek = abs_path("models/modelYellowRectangle.dat");
-my $modelZebra = abs_path("models/modelZebra.dat");
+# my $modelGeel = abs_path("models/modelGeel.dat");
+# my $modelGeelRechthoek = abs_path("models/modelYellowRectangles.dat");
+# my $modelZebra = abs_path("models/modelZebra.dat");
+
+
+
+my $modelGroot = "SVM/models/modelTegelGroot.dat";
+my $modelMiddel = "SVM/models/modelTegelMiddel.dat";
+my $modelKlein = "SVM/models/modelTegelKlein.dat";
+
+my $modelGrasLinks = "SVM/models/modelGrasLinks.dat";
+my $modelGrasRechts = "SVM/models/modelGrasRechts.dat";
+
+my $modelGeel = "SVM/models/modelGeel.dat";
+my $modelGeelRechthoek = "SVM/models/modelYellowRectangles.dat";
+my $modelZebra = "SVM/models/modelZebra.dat";
 
 
 # SVM programs
@@ -231,6 +244,9 @@ open (INFILE , $inputFile)  or die "Can't open $inputFile: $!";
 my $count = 0;
 
 while (<INFILE>) {
+	open(DATWR, ">tmp_dat.dat");
+	print DATWR $_;
+
 	my $tileSize = checkTileSize();
 	my $largeTiles = checkLargeTiles();
 	my $mediumTiles = checkMediumTiles();
@@ -313,3 +329,6 @@ while (<INFILE>) {
 }
 
 close(DAT);
+close(DATWR);
+
+`del tmp_predictions tmp_dat.dat`
