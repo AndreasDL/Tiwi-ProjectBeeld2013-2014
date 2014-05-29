@@ -10,10 +10,12 @@ Manual way:
 1. svm trainen , is reeds gebeurd & models staan in SVM/models
 
 2. Feature vectoren berekenen
-	-> run example (compiled voor linux 64 bit)
+	-> run example (linux 64 bit)
 	-> featurvectoren staan nu in featurevectors.dat
 3. Perl script voor het overlopen van alle frames
 	-> uitvoer: zone voor elk frame
+	-> WINDOWS: mogelijk aanpassen paden & del commando onderaan uit commentaar halen
+
 
 Script (linux):
 -> EasyFixAll-Classification.sh
