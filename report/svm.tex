@@ -1,0 +1,40 @@
+\clearpage
+\section{SVM}
+In machine learning, support vector machines (SVM) are supervised learning models with associated learning algorithms. They analyze data and recognize patterns used for classification and regression analysis. Given a set of training examples, each marked as belonging to one of two categories indicated by either -1 or +1.
+\npar
+An SVM training algorithm builds a model that assigns new examples into one category or the other, making it a non-probabilistic binary linear classifier. The more sure the algorithm is of its classification the more positive/negative the given value will be.
+The closer the classification is to zero the more likely it is to get a false postive.
+\npar
+A SVM performs classification by constructing an N-dimensional hyperplane that optimally separates the data into two categories. An SVM model is a representation of the examples as points in space, mapped so that the examples of the separate categories are divided by a clear gap that is as wide as possible. New examples are then mapped into that same space and predicted to belong to a category based on which side of the gap they fall on.
+\npar
+The recommended SVM, \(SVM^{perf}\)\footnote{\url{http://www.cs.cornell.edu/people/tj/svm_light/svm_perf.html}}, was used for this application.
+\(SVM^{perf}\) is an implementation of the Support Vector Machine (SVM) formulation for optimizing multivariate performance measures described in [Joachims, 2005].
+\npar
+As shown in Figures \ref{tree1} and \ref{tree2} several SVM's were used to create a tree structure to classify each frame to a zone.
+\npar
+The challenge with a SVM is finding the right training data for each feature. The right data is needed to make the Classification as correct as possible thus minimising the chance of a false positive. 
+
+To optimize Accuracy, Precision en Recall:
+\npar
+TP = True Positive,
+TN = True Negative,
+FP = False Positive,
+FN = False Negative
+\npar
+$Accuracy = (TP + TN) / (TP + TN + FP + FN)$
+
+$Precision = TP / (TP+FP)$
+
+$Recall = TP / (TP+FN)$
+
+\mijnfiguur{width=0.5\textwidth}{svmtable}{SVM table}
+
+in words
+
+Accuracy = \% correct classified items.
+
+Precision = \% selected items ( cat. +1) that are correct.
+
+Recall = \% correct items that are selected.
+
+\clearpage

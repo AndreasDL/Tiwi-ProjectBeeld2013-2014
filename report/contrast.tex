@@ -1,0 +1,11 @@
+\subsection{Contrast}
+
+While the tile detection algorithm was working pretty good, there were some regions in which the tiles are visible with the naked eye, but could not be detected. To resolve this, some code was added to adjust the contrast of the images. 
+
+\subsubsection{Adjusting contrast}
+
+To adjust the contrast of an image, a new image has to be created where a specific formula is used for every pixel. To complete this task, every pixel of the original image must be accessed. Since the image is in BGR, three values must be changed per pixel. To change the contrast, each of the three values of every pixel must be multiplicated with a variable, which will be noted as \textalpha. \textalpha  \ lies in a range of 1.0-3.0. Since this variable is a float, the result of this multiplication may not be an integer. To solve this problem this result must be saturated. The formula used to adjust the contrast can be noted down as \textalpha \  $ \cdot $ p(i, j) where p is the pixel located on column i and row j.
+
+\subsubsection{Brightness}
+
+With a slight modification to the formula, it is also possible to adjust the brightness of an image. Altough this was not used for this application, it is still useful to note this down. The formula to adjust the contrast and brightness of an image is \textalpha \  $ \cdot $ p(i, j) + \textbeta. \textbeta is an integer which lies in the range 0-100.

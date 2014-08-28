@@ -1,0 +1,52 @@
+\subsection{Grass}
+\subsubsection{Idea} 
+%Because grass keeps its green color during the year, it's a constant and reliable feature. % ni waar
+Colordetection is a simple tool to detect grass, however a large variation in hue and saturation can cause problems.
+Apart from the shadow and reflection, the colour of grass show lots of variations caused by external factors e.g. soil moisture, trash, seasons, weather. Therefore a large range of green must be considered as grass.
+\npar
+This section will discuss a few different approaches, each improving with the knowledge of the previous ones.
+It is important to point out that in all of the approaches, the frame is converted from Blue Green Red (BGR)\footnote{BGR and RGB are equivalent colour spaces, except values are stored in a different order} \footnote{\url{http://infohost.nmt.edu/tcc/help/pubs/colortheory/web/color-wheel.html}} to Hue Saturation Value (HSV)\footnote{\url{http://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html}}.
+Since the person walks next to the grass rather than on it, grass is only found at the left or the right side.
+\subsubsection{How it works}
+To define the location if the grass is on the left or right side, the frame is cut in 3 parts. Only the left and right part are kept. Note that while the perspective of the image could be converted to bird's-eye-view, no problems where caused by skipping this step.
+\paragraph{First approach}
+To identify grass in a frame, an ideal colour of grass must be defined. This calibration took place by defining the average HSV values from a collection of pictures of grass. The result were these HSV values:
+H: 60
+S: 109
+V: 94
+\footnote{Note that H in OpenCV ranges between 0 and 180 instead of 0 and 360 and S and V range between 0 and 255 instead of 0 and 100.}
+\npar
+The left and right side of the image is cut in smaller parts, then the average colour of each part is calculated by
+using the \(\sqrt{a^2 + b^2 + c^2}\) formula. The smallest value on each side gives the feature value. A small
+values implies a small distance and therefor the presence of grass.  This causes a problem, since red is located both on the lower and upper side of the H space, while green is located in the center. the average of 2 red colors on each side of the H space will be centered and therefor green. This means that when a frame contains a lot of brown (which in its turn contains a lot of red) the average is located in the center and therefor also green. This is considered a bad average since the system now identifies both brown and green as grass.
+
+\mijnfiguur{width=0.9\textwidth}{huered}{Red located at both edges of the H space, while green is found in the middle}
+
+\clearpage
+\subsubsection{Using a weight factor}
+In an attempt to avoid these bad averages, the OpenCV function \(inRange()\)\footnote{\url{http://docs.opencv.org/modules/core/doc/operations_on_arrays.html\#inrange}} was used to preprocess the image. Colors in a centered range are kept before the average distance is calculated. However, because only green pixels are left in the selected image, the distance is always low even when one green pixel is found. A weight factor had to combine both results, however an ideal factor was never found. Since the average still contains a lot of false positives, a new method is needed.
+
+\subsubsection{Third approach}
+Since the bad averages are caused by red colors in the image, the second approach will calculate the fraction of red in the image. This calculation is, like the previous method, calculated by using the \(inRange()\) function. This time
+however to select the red color instead of green. When this value is higher than 0.25, a penalty on the calculated
+distance is given. The penalty is related to the fraction of green pixels in order to keep the distance of frames with
+both red and green colors low . Also an additional penalty is given when the S component is low. A low S component
+corresponds with graycolors and causing the H component to be less significant.
+\npar
+While the output of this classification looks promising, the SVM has trouble classifing the frames. Valid frames are in
+the \(\left]0;70\right[\) interval, invalid in \(\left]80,140\right[\). This small margin appears to be too small for
+the SVM.
+
+\subsubsection{Final approach}
+\npar
+When developping the third approach, it became clear that only the selection of green pixels is reliable. Therefor only
+the green pixels are used in this approach. All pixels matching \(H \in \left[29,45\right]\) \(S \in
+\left[45,255\right]\) \(V \in \left[36,255\right]\) are counted and produce good results. This created a big difference
+in valid and invalid frames, giving the SVM the posibility to classify the frames.
+
+\subsubsection{Futher ideas}
+\npar
+Using the exact number of valid pixels in the SVM is a bad solution. When a different resolution is used, new training
+is necessairy since the number of valid pixels could be much higher than before. An improvement would be to calculate
+the fraction of green pixels over all pixels. This is more consistant with different resolutions.
+By using only color to detect grass, other green objects are also identified. Texture might bring a solution but is hard to implement.

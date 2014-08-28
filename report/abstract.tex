@@ -1,0 +1,16 @@
+\begin{abstract}
+%\section{Abstract}
+
+\npar
+Navigating from place A to place B is not an easy task for blind or visually impaired people.
+They heavily rely on memory and use tools such as a white cane, used to feel the road ahead.
+Usually visually impaired people remember a list of steps by heart. When they use a route the go through the list one step at a time. Because of this, most of them only know 5 routes.
+\npar
+Because GPS signals have poor reception in dense populated areas, a combination of GPS and image processing is used. Both systems will work together to cancel out miscalcutations while providing a more reliable positioning system.
+This project focusses on the image processing part. First the route is divided in smaller zones then each zone is characterized by a subset of features. These features are identified while a blind or visually impaired person follows his route,  and used to locate the blind person.
+\npar
+The goal of this project is not to make a realtime system, but to explore which features are useful.
+Therefor the route from Sint-pietersstation in Ghent to Campus Schoonmeersen Ghent is selected as a training route. This route is divided in segments characterized by features that are recognized by a SVM (Support Vectoring Machine). The goal of this project is to prodive a script that, once given a movie, can analyse each frame and report the corresponding zone.
+\npar
+\clearpage
+\end{abstract}

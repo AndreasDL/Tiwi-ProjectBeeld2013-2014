@@ -1,0 +1,12 @@
+\clearpage
+\section{Segmentation}
+
+Using the features discussed in the previous section it was possible to divide the given route into multiple zones as shown in Figure \ref{zones}.
+\mijnfiguur{width=0.5\textwidth}{zones}{A table overview of the zones and their features}
+
+The table is transformed into a decision tree. Following the tree, left for yes and right for no, each frame can be classified with it corresponding zone, see Figure \ref{zones}.
+
+\mijnfiguur{width=0.5\textwidth}{tree1}{Left part of the decision tree}
+\mijnfiguur{width=0.5\textwidth}{tree2}{Right part of the decision tree}
+\clearpage
+Later a distinction was added to zone 10. Splitting it in two zones: zone 10, the zebra crossing as discussed in section \ref{zebrasection} and zone 11: the station. However since the zebra detection doesn't work properly, zone 10 is ignored. The division was done since the difference between a zebra crossing at a busy street from a busy station is very important for a blind person.

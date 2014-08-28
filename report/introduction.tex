@@ -1,0 +1,9 @@
+\section{Introduction}
+Image processing creates a lot of potentionally groundbreaking developments, aiding visually impaired and blind people being one of them. Because these people have to learn each route by heart, most of them only know 5 routes. This has a large impact on their lifestyle and relatives. Image processing could offer a solution by assisting these people with navigation.
+\npar
+This project aims to create such a system by using image processing to assists blind or visually impaired persons. This system could then be used in combination with a GPS. The GPS would be used to determine the exact location, however when no GPS reception is available, the system would fall back on image processing to locate the person. Since the time for this project is limited, the goal is to create a script that classifies the zone for each frame from a given movie using only image processing. 
+\npar
+To acomplish this, the system must learn a route. This is done by dividing the route in zones, each characterized by their own unique combination of features. The first part of this project is the segmentation; division of the route in different zones. The seconds part will then select good recognizable features for extraction followed by mapping each unique subset of features on the corresponding zone. Once the features are extracted and mapped on zones a SVM is used to identify these features. The results of this SVM will provide the zone.
+\npar
+First up is an explaination about the SVM, the SVM used is \(SVM^{perf}\).
+This is followed by a detailed explanation of features and the segmentation before the reports ends with the conclusion.

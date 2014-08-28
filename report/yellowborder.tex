@@ -1,0 +1,13 @@
+\subsection{Yellow border}
+\subsubsection{Idea}
+As there are a lot of zones where tiles cannot be recognized, there is still need for extra features. To recognize extra zones, a feature was implemented to detect yellow items. This can be used in combination with other features, like grass, to determine in what zone the person is at that given moment. 
+
+\subsubsection{Finding the color yellow}
+
+To find the color yellow, the image is converted from BGR to HSV. After the image is converted, the colors that lie in a range of HSV values are kept, the others are thrown away. A binairy image is created using the inRange function. The range that is used is (20, 55, 25) - (24, 255, 210) with (H, S, V) respectively. This range is used to detect yellow items, but also to limit the reflection of the bright yellow sunlight. 
+
+\subsubsection{Using the yellow color}
+By using the yellow color in combination with other features, it is possible to recognize zones which couldn't be recognized without the yellow color. However, this is not sufficient to be certain that the correct zone is identified. In order to solve this problem, an extra feature was added.
+
+\subsubsection{Detecting yellow rectangles}
+By detecting yellow rectangles, the zone with yellow borders can be identified better. To implement this feature, detecting yellow is used as a base. A problem with this, is the yellow sunlight which causes to reflect bright yellow on some items. To solve this a threshold was added to filter out bright items before the yellow color gets detected. A second problem that occured, is that not enough yellow was returned. The range in which yellow was searched had to be set broader. The range got changed into ((20, 40, 40) - (23, 255, 255). Only thing left is to detect rectangles. But this is the same as detecting squares, so the same code could be used to detect rectangles in this case. The only difference is the source image, the image used here is an image of only yellow items. 

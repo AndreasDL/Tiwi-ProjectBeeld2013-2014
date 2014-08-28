@@ -1,0 +1,72 @@
+\documentclass{template/llncs} %geen idee wa dees is
+%\documentclass[11pt,a4paper,oneside]{article}
+\usepackage{makeidx}  % allows for indexgeneration
+\usepackage{a4wide} %bredere tekst
+\usepackage[english]{babel} % woorden juist afsplitsen
+\usepackage{graphicx} %afbeeldingen ?
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage{url}
+\usepackage{subcaption}
+% Volgend package is niet echt nodig. Het laat echter toe om gemakkelijk elektronisch
+% te navigeren in je pdf-document. Deze package moet altijd als laatste ingeladen worden.
+\usepackage[a4paper,plainpages=false]{hyperref}    % Om hyperlinks te hebben in het pdfdocument.
+\setlength{\parindent}{0cm}             % Inspringen van eerste lijn van paragrafen is niet gewenst.
+
+
+%commando's
+\newcommand{\npar}{\par \vspace{2.3ex plus 0.3ex minus 0.3ex}} %nieuwe paragraaf
+
+\graphicspath{{images/}} %afbeeldingen in images zetten
+\newcommand{\mijnfiguur}[4][h!]{            % Het eerste argument is standaar `ht'. op H zetten voor HIER EN NERGENS ANDERS
+    \begin{figure}[#1]                      % Beginnen van de figure omgeving
+        \begin{center}                      % Beginnen van de center omgeving
+            \includegraphics[#2]{#3}        % Het eigenlijk invoegen van de figuur (2: opties, 3: bestandsnaam)
+            \caption{#4\label{#3}}          % Het bijschrift (argument 4) en het label (argument 3)
+        \end{center}
+    \end{figure}
+}
+
+% make a proper TOC despite llncs
+\setcounter{tocdepth}{3}
+\makeatletter
+\renewcommand*\l@author[2]{}
+\renewcommand*\l@title[2]{}
+\makeatletter
+
+%%document zelf
+\begin{document}
+\frontmatter          % for the preliminaries
+\pagestyle{headings}
+
+\input{titelblad}
+\input{abstract}%abstract & inleiding tesamen
+
+\tableofcontents
+\clearpage
+\mainmatter
+\input{introduction}
+
+%werking svm? => ergens tussen steken
+\input{svm}
+
+%features => deze features worden gebruikt bij de zone
+\section{Features}
+\input{grass}
+\input{zebra}
+\input{tiles}
+\input{yellowborder}
+\input{contrast}
+
+
+%segmentatie => uitleggen welke zone gebruikt worden en welke features we daaruit willen herkennen
+\input{zones}
+
+
+\input{conclusion}
+
+%backmatter
+\input{template_bibliografie}
+
+
+\end{document}
